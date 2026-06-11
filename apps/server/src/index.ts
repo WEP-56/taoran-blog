@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { syncPostsFromContent } from "./content/sync";
 import { runMigrations } from "./db/client";
+import { adminRoutes } from "./routes/admin";
 import { publicRoutes } from "./routes/public";
 
 runMigrations();
@@ -33,7 +34,8 @@ app.get("/api/health", (c) =>
 // 公开接口（docs/07-data.md §5）
 app.route("/api/v1", publicRoutes);
 
-// 管理接口挂载点（/api/admin/*，M4 实现，见 docs/06-site-admin.md §4）
+// 管理接口（docs/06-site-admin.md §4）
+app.route("/api/admin", adminRoutes);
 
 const port = Number(process.env.SERVER_PORT ?? 8787);
 serve({ fetch: app.fetch, port }, (info) => {

@@ -10,3 +10,6 @@ data/
 .env
 .env.local
 .DS_Store
+
+# 回收站（软删除的文章，进备份不进 git）
+content/.trash/
