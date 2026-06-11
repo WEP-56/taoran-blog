@@ -59,7 +59,7 @@ function makeTheme(
 
 /** 亮色：晒在日光下的陶坯 */
 export const taoranShikiLight = makeTheme("taoran-clay-light", "light", {
-  bg: "#fff9f0",
+  bg: "#f7efe2",
   fg: "#4a3b32",
   comment: "#a08a78",
   string: "#6f8a55",

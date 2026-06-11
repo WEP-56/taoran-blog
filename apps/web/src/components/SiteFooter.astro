@@ -1,0 +1,28 @@
+---
+import site from "../../../../content/site.json";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <p>
+    © {year} {site.name} · <a href="/rss.xml">RSS</a> · <a href="/sitemap-index.xml">Sitemap</a>
+  </p>
+  <p class="clay-note">{site.footer}</p>
+</footer>
+
+<style>
+  .site-footer {
+    max-width: 64rem;
+    margin: 4rem auto 0;
+    padding: 2rem 1.5rem 3rem;
+    border-top: 2px dashed var(--clay-line);
+    color: var(--clay-ink-2);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .clay-note {
+    font-family: var(--font-display);
+    opacity: 0.7;
+  }
+</style>

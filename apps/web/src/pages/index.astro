@@ -1,154 +1,265 @@
 ---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import { loadMoments } from "../lib/moments";
+import site from "../../../../content/site.json";
+
+const posts = (await getCollection("posts", (p) => p.data.status === "published")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const featured = posts.find((p) => p.data.pinned) ?? posts[0];
+const latest = posts.filter((p) => p !== featured).slice(0, 4);
+
+const tagCount = new Map<string, number>();
+for (const post of posts) for (const t of post.data.tags) tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
+const topTags = [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12);
+
+const moments = loadMoments().slice(0, 3);
+const fmt = (d: Date) => d.toLocaleDateString("zh-CN", { month: "long", day: "numeric" });
 ---
 
 <Base>
   <main>
     <section class="hero">
-      <h1>陶然 <span class="en">Taoran</span></h1>
-      <p class="tagline">陶者，黏土也；陶然，乐也。</p>
-      <p class="note">
-        M1 进行中：<a href="/posts/">文章（内容管线验证）</a> · <a href="/design/">设计系统预览</a>
+      <div class="hero-text">
+        <h1>{site.name}</h1>
+        <p class="tagline">{site.tagline}</p>
+        <p class="intro">一团温暖的粘土博客：写前端、设计与生活。页面上的东西都可以捏。</p>
+        <p class="cta">
+          <a class="clay-btn" data-variant="primary" href="/posts/">开始阅读</a>
+          <a class="clay-btn" data-variant="soft" href="/about/">关于我</a>
+        </p>
+      </div>
+      <div class="hero-clay" aria-hidden="true">
+        {/* M5 替换为 WebGPU 粘土球（docs/08-webgpu.md §3.1）；现为 CSS 占位 blob */}
+        <div class="blob"></div>
+        <p class="hero-hint">（未来这里有颗会记仇的粘土球）</p>
+      </div>
+    </section>
+
+    {
+      featured && (
+        <section class="featured reveal">
+          <h2 class="sec-title">置顶</h2>
+          <a class="clay-card featured-card" data-hoverable="true" href={`/posts/${featured.data.slug}/`}>
+            {featured.data.cover && (
+              <Image src={featured.data.cover} alt="" widths={[480, 960]} sizes="(max-width: 768px) 100vw, 420px" />
+            )}
+            <div>
+              <h3>{featured.data.title}</h3>
+              <p>{featured.data.summary}</p>
+              <p class="meta">{fmt(featured.data.date)}</p>
+            </div>
+          </a>
+        </section>
+      )
+    }
+
+    <section>
+      <h2 class="sec-title">最新</h2>
+      <div class="latest-grid">
+        {
+          latest.map((post, i) => (
+            <a class="clay-card post-card reveal" style={`--i:${i}`} data-hoverable="true" href={`/posts/${post.data.slug}/`}>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.summary}</p>
+              <p class="meta">{fmt(post.data.date)}</p>
+            </a>
+          ))
+        }
+      </div>
+      <p class="more">
+        <a href="/archive/">看全部归档 →</a>
       </p>
     </section>
 
-    <section class="grid">
-      <div class="clay card">
-        <h2>粘土卡片</h2>
-        <p>
-          双内阴影 + 大圆角 + 柔和落影。hover 时抬升，规格见
-          <code>docs/03-design-system.md</code>。
-        </p>
-        <button class="clay-btn primary" type="button">捏一下</button>
-        <button class="clay-btn soft" type="button" id="theme-toggle">窑变（切换主题）</button>
-      </div>
+    <section>
+      <h2 class="sec-title">标签</h2>
+      <p class="tag-cloud">
+        {
+          topTags.map(([tag, count]) => (
+            <a class="clay-tag-link" href={`/tags/${tag}/`}>
+              #{tag} <small>{count}</small>
+            </a>
+          ))
+        }
+      </p>
+    </section>
 
-      <div class="clay card">
-        <h2>凹陷输入</h2>
-        <p>输入框是泥上压出的槽：</p>
-        <input class="clay-input" type="text" placeholder="在泥上写点什么……" />
+    <section>
+      <h2 class="sec-title">最近动态</h2>
+      <div class="moments">
+        {
+          moments.map((m, i) => (
+            <div class="clay-card moment reveal" style={`--i:${i}; --tilt:${(i % 2 === 0 ? 1 : -1) * 0.6}deg`}>
+              <p>{m.mood && <span class="mood">{m.mood}</span>} {m.text}</p>
+              <p class="meta">{fmt(m.createdAt)}</p>
+            </div>
+          ))
+        }
       </div>
-
-      <div class="clay card">
-        <h2>泥团</h2>
-        <div class="blob" aria-hidden="true"></div>
-        <p>呼吸变形的装饰 blob，未来散布在 hero 与空状态。</p>
-      </div>
+      <p class="more">
+        <a href="/moments/">更多动态 →</a>
+      </p>
     </section>
   </main>
 </Base>
-
-<script>
-  const toggle = document.getElementById("theme-toggle");
-  toggle?.addEventListener("click", () => {
-    const root = document.documentElement;
-    const next = root.dataset.theme === "dark" ? "light" : "dark";
-    root.dataset.theme = next;
-    localStorage.setItem("taoran:theme", next);
-  });
-</script>
 
 <style>
   main {
     max-width: 64rem;
     margin: 0 auto;
-    padding: 4rem 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+  .sec-title {
+    font-size: 1.1rem;
+    color: var(--clay-ink-2);
+    border-bottom: 2px dashed var(--clay-line);
+    padding-bottom: 0.4rem;
+    margin-top: 3.5rem;
+  }
+
+  /* hero */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 2rem;
+    min-height: 50vh;
+  }
+  @media (max-width: 768px) {
+    .hero {
+      grid-template-columns: 1fr;
+    }
   }
   .hero h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin: 0;
     color: var(--clay-primary-deep);
   }
-  .hero .en {
-    font-size: 1.5rem;
-    color: var(--clay-ink-2);
-  }
   .tagline {
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     color: var(--clay-ink-2);
   }
-  .note {
-    max-width: 38em;
+  .intro {
+    max-width: 30em;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
+  .cta {
+    display: flex;
+    gap: 1rem;
   }
-  .card {
-    padding: 1.75rem;
-    transition:
-      box-shadow var(--mo-base) var(--mo-ease-out),
-      transform var(--mo-base) var(--mo-ease-out);
+  .cta .clay-btn {
+    text-decoration: none;
   }
-  @media (hover: hover) {
-    .card:hover {
-      box-shadow: var(--clay-elev-raised);
-      transform: translateY(-3px) rotate(0.4deg);
-    }
-  }
-  .card h2 {
-    margin-top: 0;
-    font-size: 1.2rem;
-  }
-  .clay-btn {
-    font: inherit;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    padding: 0.6rem 1.4rem;
-    margin-right: 0.75rem;
-    border-radius: var(--clay-r-md);
-    box-shadow: var(--clay-elev-rest);
-    transition:
-      transform var(--mo-fast) var(--mo-ease-squish),
-      box-shadow var(--mo-fast) var(--mo-ease-out);
-  }
-  .clay-btn:active {
-    transform: scale(0.97);
-    box-shadow: var(--clay-elev-pressed);
-  }
-  .clay-btn.primary {
-    background: var(--clay-primary);
-    color: #fff9f0;
-  }
-  .clay-btn.soft {
-    background: var(--clay-surface);
-    color: var(--clay-ink);
-  }
-  .clay-input {
-    font: inherit;
-    width: 100%;
-    border: none;
-    padding: 0.7rem 1rem;
-    border-radius: var(--clay-r-md);
-    background: var(--clay-surface-2);
-    color: var(--clay-ink);
-    box-shadow:
-      inset 4px 4px 10px var(--clay-sh-dark),
-      inset -4px -4px 10px var(--clay-sh-light);
-  }
-  .clay-input:focus-visible {
-    outline: 3px solid var(--clay-primary);
-    outline-offset: 0;
+  .hero-clay {
+    text-align: center;
   }
   .blob {
-    width: 96px;
-    height: 96px;
-    background: var(--clay-blush);
+    width: min(220px, 50vw);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    background: var(--clay-primary);
     border-radius: var(--clay-r-blob);
-    box-shadow: var(--clay-elev-rest);
-    animation: breathe 6s ease-in-out infinite;
+    box-shadow: var(--clay-elev-raised);
+    animation: blob-breathe 7s ease-in-out infinite;
   }
-  @keyframes breathe {
-    0%,
-    100% {
-      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  @keyframes blob-breathe {
+    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    33% { border-radius: 55% 45% 35% 65% / 50% 60% 40% 50%; }
+    66% { border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%; }
+  }
+  .hero-hint {
+    color: var(--clay-ink-2);
+    font-size: 0.8rem;
+    font-family: var(--font-display);
+  }
+
+  /* featured + latest */
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 1.5rem;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+  }
+  @media (max-width: 640px) {
+    .featured-card {
+      grid-template-columns: 1fr;
     }
-    50% {
-      border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
-    }
+  }
+  .featured-card img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--clay-r-md);
+    box-shadow: var(--clay-elev-pressed);
+  }
+  .featured-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.4rem;
+  }
+  .latest-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+  .post-card {
+    color: inherit;
+    text-decoration: none;
+  }
+  .post-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+  .meta {
+    color: var(--clay-ink-2);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+  }
+  .more {
+    margin-top: 1.5rem;
+    text-align: right;
+  }
+
+  /* tags */
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .clay-tag-link {
+    background: var(--clay-surface);
+    box-shadow: var(--clay-elev-pressed);
+    border-radius: 999px;
+    padding: 0.25em 1em;
+    text-decoration: none;
+    color: var(--clay-ink);
+    transition: transform var(--mo-fast) var(--mo-ease-squish), box-shadow var(--mo-fast) var(--mo-ease-out);
+  }
+  .clay-tag-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--clay-elev-rest);
+  }
+  .clay-tag-link small {
+    color: var(--clay-ink-2);
+  }
+
+  /* moments：便签泥片，随机 ±1° 旋转（docs/05-site-web.md §2.5） */
+  .moments {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .moment {
+    rotate: var(--tilt, 0.5deg);
+  }
+  .moment p:first-child {
+    margin-top: 0;
+  }
+  .mood {
+    font-size: 1.2em;
+    margin-right: 0.25em;
   }
 </style>

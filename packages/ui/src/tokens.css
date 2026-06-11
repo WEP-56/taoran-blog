@@ -4,12 +4,12 @@
  * 任何组件不得硬编码色值——一律引用本文件变量。
  */
 
-/* ── 亮色「日晒陶坊」 ───────────────────────────── */
+/* ── 亮色「日晒陶坊」（M1 实测反馈"晃眼"后整体降一档亮度） ── */
 :root,
 html[data-theme="light"] {
-  --clay-bg: #faf3e9;
-  --clay-surface: #f6e8d8;
-  --clay-surface-2: #fff9f0;
+  --clay-bg: #f2e9db;
+  --clay-surface: #ebdcc7;
+  --clay-surface-2: #f7efe2;
   --clay-primary: #e07856;
   --clay-primary-deep: #c9603f;
   --clay-accent: #9caf88;
@@ -17,13 +17,13 @@ html[data-theme="light"] {
   --clay-blush: #efa48b;
   --clay-ink: #4a3b32;
   --clay-ink-2: #8a7263;
-  --clay-line: #e5d3bf;
+  --clay-line: #dcc9b2;
   --clay-danger: #d45d4e;
 
   /* 粘土阴影配方的三个分量（亮面/暗面/落影） */
-  --clay-sh-light: rgba(255, 255, 255, 0.65);
-  --clay-sh-dark: rgba(197, 153, 124, 0.35);
-  --clay-sh-drop: rgba(180, 140, 110, 0.25);
+  --clay-sh-light: rgba(255, 252, 245, 0.55);
+  --clay-sh-dark: rgba(190, 145, 115, 0.35);
+  --clay-sh-drop: rgba(170, 130, 100, 0.25);
 }
 
 /* ── 暗色「窑变之夜」 ───────────────────────────── */

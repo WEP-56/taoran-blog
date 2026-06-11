@@ -1,0 +1,179 @@
+---
+import Search from "astro-pagefind/components/Search";
+import site from "../../../../content/site.json";
+
+const current = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  return href === "/" ? current === "/" : current.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <a class="logo" href="/">
+    <img src="/favicon.svg" alt="" width="32" height="32" />
+    <span>{site.name}</span>
+  </a>
+
+  <nav aria-label="主导航">
+    {
+      site.nav.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="actions">
+    <button class="clay-btn icon-btn" type="button" data-open-search aria-label="搜索（Ctrl+K）" title="搜索（Ctrl+K）">
+      🔍
+    </button>
+    <button class="clay-btn icon-btn" type="button" data-toggle-theme aria-label="切换明暗主题" title="窑变">
+      <span class="theme-icon-light" aria-hidden="true">🌙</span>
+      <span class="theme-icon-dark" aria-hidden="true">☀️</span>
+    </button>
+  </div>
+</header>
+
+<dialog id="search-dialog">
+  <div class="search-panel">
+    <Search id="search" className="pagefind-ui" uiOptions={{ showImages: false, placeholderText: "搜搜这块泥里有什么……" }} />
+    <p class="search-hint">Esc 关闭 · 搜索索引在构建时生成（dev 下需先 build 一次）</p>
+  </div>
+</dialog>
+
+<script>
+  // 事件委托挂 document：View Transitions 换页后依然有效
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-toggle-theme]")) {
+      const root = document.documentElement;
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      localStorage.setItem("taoran:theme", next);
+    }
+    if (target.closest("[data-open-search]")) {
+      (document.getElementById("search-dialog") as HTMLDialogElement | null)?.showModal();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      const dialog = document.getElementById("search-dialog") as HTMLDialogElement | null;
+      if (dialog) dialog.open ? dialog.close() : dialog.showModal();
+    }
+  });
+
+  // 点击背板关闭
+  document.addEventListener("click", (e) => {
+    const dialog = e.target as HTMLElement;
+    if (dialog.id === "search-dialog") (dialog as unknown as HTMLDialogElement).close();
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background: color-mix(in srgb, var(--clay-bg) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--clay-line);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--clay-primary-deep);
+    text-decoration: none;
+  }
+  nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    overflow-x: auto;
+  }
+  nav a {
+    color: var(--clay-ink-2);
+    text-decoration: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--clay-r-sm);
+    white-space: nowrap;
+    transition: background var(--mo-fast) var(--mo-ease-out), color var(--mo-fast) var(--mo-ease-out);
+  }
+  nav a:hover {
+    background: var(--clay-surface);
+    color: var(--clay-ink);
+  }
+  nav a[aria-current="page"] {
+    background: var(--clay-surface);
+    color: var(--clay-primary-deep);
+    font-weight: 700;
+    box-shadow: var(--clay-elev-pressed);
+  }
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .icon-btn {
+    padding: 0.45rem 0.7rem;
+  }
+  /* 主题图标随主题切换 */
+  .theme-icon-dark {
+    display: none;
+  }
+  :global(html[data-theme="dark"]) .theme-icon-light {
+    display: none;
+  }
+  :global(html[data-theme="dark"]) .theme-icon-dark {
+    display: inline;
+  }
+
+  #search-dialog {
+    border: none;
+    border-radius: var(--clay-r-xl);
+    background: var(--clay-bg);
+    box-shadow: var(--clay-elev-raised);
+    padding: 0;
+    width: min(40rem, 92vw);
+  }
+  #search-dialog::backdrop {
+    background: rgba(40, 30, 22, 0.45);
+    backdrop-filter: blur(3px);
+  }
+  .search-panel {
+    padding: 1.5rem;
+  }
+  .search-hint {
+    color: var(--clay-ink-2);
+    font-size: 0.8rem;
+    margin: 0.75rem 0 0;
+  }
+</style>
+
+<style is:global>
+  /* Pagefind UI 粘土化 */
+  .pagefind-ui {
+    --pagefind-ui-primary: var(--clay-primary-deep);
+    --pagefind-ui-text: var(--clay-ink);
+    --pagefind-ui-background: var(--clay-surface-2);
+    --pagefind-ui-border: transparent;
+    --pagefind-ui-tag: var(--clay-surface);
+    --pagefind-ui-border-radius: var(--clay-r-md);
+    --pagefind-ui-font: var(--font-body);
+  }
+  .pagefind-ui input {
+    box-shadow:
+      inset 4px 4px 10px var(--clay-sh-dark),
+      inset -4px -4px 10px var(--clay-sh-light);
+  }
+</style>

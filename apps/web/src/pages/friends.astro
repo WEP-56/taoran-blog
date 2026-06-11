@@ -1,0 +1,103 @@
+---
+import Base from "../layouts/Base.astro";
+import friendsData from "../../../../content/friends.json";
+
+const friends = friendsData.friends;
+const siteInfo = JSON.stringify(
+  { name: "陶然", url: "https://example.com", desc: "一团温暖的粘土博客", avatar: "https://example.com/favicon.svg" },
+  null,
+  2,
+);
+---
+
+<Base title="友链 · 陶然">
+  <main>
+    <h1>友链</h1>
+    <p class="count">隔壁工坊的陶土名片。</p>
+    <div class="cards">
+      {
+        friends.map((f, i) => (
+          <a class="clay-card friend reveal" style={`--i:${i}`} data-hoverable="true" href={f.url} target="_blank" rel="noopener noreferrer">
+            <img src={f.avatar} alt="" width="56" height="56" loading="lazy" />
+            <div>
+              <h2>{f.name}</h2>
+              <p>{f.desc}</p>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+
+    <section class="apply clay-card">
+      <h2>交换友链</h2>
+      <p>欢迎来信交换。本站信息（点击复制）：</p>
+      <pre id="site-info"><code>{siteInfo}</code></pre>
+      <button class="clay-btn" data-variant="soft" type="button" data-copy-info>复制</button>
+    </section>
+  </main>
+</Base>
+
+<script>
+  document.addEventListener("click", async (e) => {
+    if (!(e.target as HTMLElement).closest("[data-copy-info]")) return;
+    const text = document.getElementById("site-info")?.textContent ?? "";
+    await navigator.clipboard.writeText(text);
+    const btn = (e.target as HTMLElement).closest("[data-copy-info]") as HTMLButtonElement;
+    btn.textContent = "已复制 ✓";
+    setTimeout(() => (btn.textContent = "复制"), 1600);
+  });
+</script>
+
+<style>
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .count {
+    color: var(--clay-ink-2);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .friend {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+  }
+  .friend img {
+    border-radius: var(--clay-r-blob);
+    box-shadow: var(--clay-elev-pressed);
+    background: var(--clay-surface-2);
+    flex-shrink: 0;
+  }
+  .friend h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .friend p {
+    margin: 0.25rem 0 0;
+    color: var(--clay-ink-2);
+    font-size: 0.9rem;
+  }
+  .apply {
+    margin-top: 3rem;
+  }
+  .apply pre {
+    background: var(--clay-surface-2);
+    border-radius: var(--clay-r-md);
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    box-shadow:
+      inset 3px 3px 8px var(--clay-sh-dark),
+      inset -3px -3px 8px var(--clay-sh-light);
+  }
+</style>

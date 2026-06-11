@@ -2,8 +2,8 @@ import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
 /**
- * 内容集合：从仓库根 content/posts 读取（docs/02-architecture.md §2）。
- * 注意：此 schema 是 packages/content 中 postFrontmatterSchema 的镜像——
+ * 内容集合：从仓库根 content/ 读取（docs/02-architecture.md §2）。
+ * 注意：posts schema 是 packages/content 中 postFrontmatterSchema 的镜像——
  * Astro 内置 zod 与包内 zod 4 实例不互通，两处必须人工保持同步。
  */
 const posts = defineCollection({
@@ -26,4 +26,12 @@ const posts = defineCollection({
     }),
 });
 
-export const collections = { posts };
+/** 单页内容（about 等） */
+const pages = defineCollection({
+  loader: glob({ pattern: "*.mdx", base: "../../content/pages" }),
+  schema: z.object({
+    title: z.string(),
+  }),
+});
+
+export const collections = { posts, pages };

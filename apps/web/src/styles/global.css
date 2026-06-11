@@ -50,3 +50,19 @@ pre {
   outline-offset: 2px;
   border-radius: var(--clay-r-sm);
 }
+
+/* 入场动效：渐入 + 6px 上移，stagger 用 --i（docs/04-motion.md §3） */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    transition:
+      opacity 0.5s var(--mo-ease-out),
+      translate 0.5s var(--mo-ease-out);
+    transition-delay: calc(var(--i, 0) * 40ms);
+  }
+  @starting-style {
+    .reveal {
+      opacity: 0;
+      translate: 0 6px;
+    }
+  }
+}

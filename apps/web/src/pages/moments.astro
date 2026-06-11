@@ -1,0 +1,63 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadMoments } from "../lib/moments";
+
+const moments = loadMoments();
+const fmt = (d: Date) =>
+  d.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<Base title="动态 · 陶然">
+  <main>
+    <h1>动态</h1>
+    <p class="count">随手捏的小泥片。</p>
+    <div class="feed">
+      {
+        moments.map((m, i) => (
+          <article class="clay-card moment reveal" style={`--i:${i}; --tilt:${(i % 2 === 0 ? 1 : -1) * 0.6}deg`}>
+            <p class="text">
+              {m.mood && <span class="mood">{m.mood}</span>}
+              {m.text}
+            </p>
+            <footer>
+              <time datetime={m.createdAt.toISOString()}>{fmt(m.createdAt)}</time>
+              {m.location && <span> · {m.location}</span>}
+            </footer>
+          </article>
+        ))
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .count {
+    color: var(--clay-ink-2);
+  }
+  .feed {
+    display: grid;
+    gap: 1.75rem;
+  }
+  .moment {
+    rotate: var(--tilt, 0deg);
+  }
+  .text {
+    margin-top: 0;
+  }
+  .mood {
+    font-size: 1.3em;
+    margin-right: 0.35em;
+  }
+  footer {
+    color: var(--clay-ink-2);
+    font-size: 0.85rem;
+  }
+</style>

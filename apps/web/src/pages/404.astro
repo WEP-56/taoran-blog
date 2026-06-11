@@ -1,0 +1,72 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="404 · 陶然">
+  <main>
+    <div class="pot" aria-hidden="true">
+      {/* M5 替换为可拖拽拼回的物理碎陶罐（docs/08-webgpu.md §3.3） */}
+      <span class="shard s1"></span>
+      <span class="shard s2"></span>
+      <span class="shard s3"></span>
+    </div>
+    <h1>404 · 陶罐摔碎了</h1>
+    <p>这页泥还没捏，或者已经回炉了。</p>
+    <p class="cta">
+      <a class="clay-btn" data-variant="primary" href="/">回首页</a>
+      <button class="clay-btn" data-variant="soft" type="button" data-open-search>搜一搜</button>
+    </p>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 6rem 1.5rem;
+    text-align: center;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .cta .clay-btn {
+    text-decoration: none;
+  }
+  .pot {
+    position: relative;
+    height: 120px;
+  }
+  .shard {
+    position: absolute;
+    background: var(--clay-primary);
+    box-shadow: var(--clay-elev-rest);
+    left: 50%;
+    top: 50%;
+  }
+  .s1 {
+    width: 70px;
+    height: 56px;
+    border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+    translate: -90px -20px;
+    rotate: -14deg;
+  }
+  .s2 {
+    width: 88px;
+    height: 64px;
+    border-radius: 55% 45% 40% 60% / 45% 55% 45% 55%;
+    translate: -30px -36px;
+    rotate: 6deg;
+  }
+  .s3 {
+    width: 60px;
+    height: 48px;
+    border-radius: 50% 50% 65% 35% / 55% 45% 55% 45%;
+    translate: 50px -14px;
+    rotate: 18deg;
+  }
+</style>

@@ -16,11 +16,13 @@ Claymorphism 三要素，全站组件统一遵守：
 
 ### 亮色「日晒陶坊」
 
+> 注：M1 实机走查后按用户反馈整体降了一档亮度（原奶油白底偏晃眼），以下为现行值。
+
 | Token | 值 | 用途 |
 | --- | --- | --- |
-| `--clay-bg` | `#FAF3E9` | 页面底（奶油纸） |
-| `--clay-surface` | `#F6E8D8` | 卡片/组件底（生陶土） |
-| `--clay-surface-2` | `#FFF9F0` | 浮层、输入框内部 |
+| `--clay-bg` | `#F2E9DB` | 页面底（亚麻纸） |
+| `--clay-surface` | `#EBDCC7` | 卡片/组件底（生陶土） |
+| `--clay-surface-2` | `#F7EFE2` | 浮层、输入框内部 |
 | `--clay-primary` | `#E07856` | 主行动色（陶土橘） |
 | `--clay-primary-deep` | `#C9603F` | 主色按压态/链接 hover |
 | `--clay-accent` | `#9CAF88` | 辅助（鼠尾草绿）：成功、标签点缀 |
@@ -28,7 +30,7 @@ Claymorphism 三要素，全站组件统一遵守：
 | `--clay-blush` | `#EFA48B` | 杏粉：点赞、温和强调 |
 | `--clay-ink` | `#4A3B32` | 正文（深可可） |
 | `--clay-ink-2` | `#8A7263` | 次级文字 |
-| `--clay-line` | `#E5D3BF` | 分隔线 |
+| `--clay-line` | `#DCC9B2` | 分隔线 |
 | `--clay-danger` | `#D45D4E` | 危险（admin 删除等） |
 
 ### 暗色「窑变之夜」

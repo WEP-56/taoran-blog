@@ -1,0 +1,76 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", (p) => p.data.status === "published");
+  const tags = new Set(posts.flatMap((p) => p.data.tags));
+  return [...tags].map((tag) => ({
+    params: { tag },
+    props: {
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Base title={`#${tag} · 陶然`}>
+  <main>
+    <h1>#{tag}</h1>
+    <p class="count">{posts.length} 篇 · <a href="/tags/">全部标签</a></p>
+    <ul>
+      {
+        posts.map((post) => (
+          <li class="clay-card" data-hoverable="true">
+            <a href={`/posts/${post.data.slug}/`}>
+              <h2>{post.data.title}</h2>
+              {post.data.summary && <p>{post.data.summary}</p>}
+              <p class="meta">
+                {post.data.date.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .count {
+    color: var(--clay-ink-2);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  li a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  li h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+  }
+  .meta {
+    color: var(--clay-ink-2);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+  }
+</style>

@@ -12,6 +12,8 @@
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",
     "@astrojs/react": "^4.0.0",
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
     "@fontsource/jetbrains-mono": "^5.1.0",
     "@fontsource/noto-sans-sc": "^5.1.0",
     "@fontsource/nunito": "^5.1.0",
@@ -19,6 +21,7 @@
     "@taoran/content": "workspace:*",
     "@taoran/ui": "workspace:*",
     "astro": "^5.0.0",
+    "astro-pagefind": "^1.8.0",
     "lxgw-wenkai-screen-webfont": "^1.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -1,0 +1,31 @@
+---
+import { getEntry, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import "../styles/article.css";
+
+const about = await getEntry("pages", "about");
+if (!about) throw new Error("content/pages/about.mdx 不存在");
+const { Content } = await render(about);
+---
+
+<Base title="关于 · 陶然">
+  <main>
+    <h1>{about.data.title}</h1>
+    <div class="prose">
+      <Content />
+    </div>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+    max-width: 38em;
+    margin-inline: auto;
+  }
+</style>

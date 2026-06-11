@@ -1,0 +1,101 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const posts = (await getCollection("posts", (p) => p.data.status === "published")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const byYear = new Map<number, typeof posts>();
+for (const post of posts) {
+  const year = post.data.date.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(post);
+}
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<Base title="归档 · 陶然">
+  <main>
+    <h1>归档</h1>
+    <p class="count">共 {posts.length} 篇，按时序晾在陶架上。</p>
+    {
+      years.map((year) => (
+        <section class="year">
+          <h2><span class="knot" aria-hidden="true"></span>{year}</h2>
+          <ul>
+            {byYear.get(year)!.map((post) => (
+              <li>
+                <time datetime={post.data.date.toISOString()}>
+                  {post.data.date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" })}
+                </time>
+                <a href={`/posts/${post.data.slug}/`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .count {
+    color: var(--clay-ink-2);
+  }
+  /* 时间轴：轴线是泥条，年份节点是泥球（docs/05-site-web.md §2.4） */
+  .year {
+    position: relative;
+    padding-left: 2rem;
+    border-left: 4px solid var(--clay-line);
+    margin-left: 0.5rem;
+    padding-bottom: 1rem;
+  }
+  .year h2 {
+    position: relative;
+    font-size: 1.4rem;
+    color: var(--clay-primary-deep);
+  }
+  .knot {
+    position: absolute;
+    left: -2rem;
+    top: 50%;
+    translate: -50% -50%;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--clay-primary);
+    box-shadow: var(--clay-elev-pressed);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.35rem 0;
+  }
+  time {
+    color: var(--clay-ink-2);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    line-height: 2;
+  }
+  li a {
+    text-decoration: none;
+  }
+  li a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+</style>

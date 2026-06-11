@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+
+const posts = await getCollection("posts", (p) => p.data.status === "published");
+const tagCount = new Map<string, number>();
+for (const post of posts) for (const t of post.data.tags) tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
+const tags = [...tagCount.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<Base title="标签 · 陶然">
+  <main>
+    <h1>标签</h1>
+    <p class="tag-cloud">
+      {
+        tags.map(([tag, count]) => (
+          <a class="tag-pill" href={`/tags/${tag}/`} style={`font-size:${Math.min(1.6, 0.95 + count * 0.12)}rem`}>
+            #{tag} <small>{count}</small>
+          </a>
+        ))
+      }
+    </p>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .tag-pill {
+    background: var(--clay-surface);
+    box-shadow: var(--clay-elev-pressed);
+    border-radius: 999px;
+    padding: 0.25em 1em;
+    text-decoration: none;
+    color: var(--clay-ink);
+    transition: transform var(--mo-fast) var(--mo-ease-squish);
+  }
+  .tag-pill:hover {
+    transform: translateY(-2px) rotate(-1deg);
+  }
+  .tag-pill small {
+    color: var(--clay-ink-2);
+  }
+</style>
