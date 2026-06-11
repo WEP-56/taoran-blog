@@ -1,0 +1,155 @@
+/* 动态岛屿样式（PostStats / LikeButton / CommentSection） */
+
+.post-stats {
+  color: var(--clay-ink-2);
+}
+
+/* 捏一下 */
+.like-wrap {
+  position: relative;
+  display: inline-block;
+}
+.like-btn {
+  font-size: 1.05rem;
+  transition:
+    transform var(--mo-fast) var(--mo-ease-squish),
+    box-shadow var(--mo-fast) var(--mo-ease-out);
+}
+.like-btn[data-pressing="true"] {
+  transform: scale(0.9, 0.82);
+  box-shadow: var(--clay-elev-pressed);
+}
+.like-count {
+  background: var(--clay-surface-2);
+  color: var(--clay-primary-deep);
+  border-radius: 999px;
+  padding: 0 0.6em;
+  margin-left: 0.5em;
+  font-size: 0.85em;
+}
+/* 泥点粒子：纯 CSS，松手喷出（docs/04-motion.md §3） */
+.mud-burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mud-burst i {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 8px;
+  height: 8px;
+  border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+  background: var(--clay-blush);
+  animation: mud-fly 0.6s var(--mo-ease-out) forwards;
+}
+.mud-burst i:nth-child(1) { --dx: -42px; --dy: -36px; }
+.mud-burst i:nth-child(2) { --dx: -16px; --dy: -52px; background: var(--clay-sun); }
+.mud-burst i:nth-child(3) { --dx: 12px; --dy: -48px; }
+.mud-burst i:nth-child(4) { --dx: 36px; --dy: -38px; background: var(--clay-accent); }
+.mud-burst i:nth-child(5) { --dx: 0px; --dy: -28px; width: 5px; height: 5px; }
+@keyframes mud-fly {
+  to {
+    translate: var(--dx) var(--dy);
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mud-burst {
+    display: none;
+  }
+}
+
+/* 评论区 */
+.comments {
+  max-width: 38em;
+  margin: 3rem auto 0;
+}
+.comments h2 {
+  font-size: 1.3rem;
+}
+.comments-loading,
+.comments-empty,
+.comments-offline {
+  color: var(--clay-ink-2);
+}
+.comment-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+.comment-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75em;
+  margin: 0 0 0.25rem;
+}
+.comment-head time {
+  color: var(--clay-ink-2);
+  font-size: 0.8rem;
+}
+.comment-body {
+  margin: 0.25rem 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.reply-btn {
+  border: none;
+  background: none;
+  color: var(--clay-primary-deep);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0;
+}
+.reply-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0.75rem 0 0 1.25rem;
+  border-left: 4px solid var(--clay-line);
+  display: grid;
+  gap: 1rem;
+}
+
+/* 表单 */
+.comment-form {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.9rem;
+}
+.comment-form h3 {
+  margin: 0;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+@media (max-width: 540px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+.comment-form .hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.notify {
+  color: var(--clay-ink-2);
+  font-size: 0.9rem;
+}
+.cancel-reply {
+  justify-self: start;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.85rem;
+}
+.notice {
+  color: var(--clay-primary-deep);
+  font-weight: 700;
+  margin: 0;
+}

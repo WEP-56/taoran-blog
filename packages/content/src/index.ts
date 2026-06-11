@@ -35,3 +35,18 @@ export const momentSchema = z.object({
 });
 
 export type Moment = z.infer<typeof momentSchema>;
+
+/** 评论提交体（公开 API 与 admin 共用，docs/07-data.md §5） */
+export const commentInputSchema = z.object({
+  authorName: z.string().min(1).max(24),
+  authorEmail: z.string().email().max(120),
+  authorSite: z.url().max(200).optional().or(z.literal("")),
+  body: z.string().min(2).max(2000),
+  parentId: z.number().int().positive().nullable().default(null),
+  notify: z.boolean().default(false),
+  // 蜜罐：正常用户永远为空；非空值放行到路由层暗中标记 spam（不能在 schema 拒绝，否则机器人能探测）
+  website2: z.string().max(200).optional(),
+});
+
+export type CommentInput = z.infer<typeof commentInputSchema>;
+

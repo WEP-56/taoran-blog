@@ -2,7 +2,11 @@
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import Base from "../../layouts/Base.astro";
+import { CommentSection } from "../../islands/CommentSection";
+import { LikeButton } from "../../islands/LikeButton";
+import { PostStats } from "../../islands/PostStats";
 import "../../styles/article.css";
+import "../../styles/islands.css";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts", (p) => p.data.status === "published");
@@ -27,6 +31,7 @@ const toc = headings.filter((h) => h.depth <= 3);
           </time>
           {readingMinutes && <span>约 {readingMinutes} 分钟</span>}
           {post.data.tags.map((t) => <span class="tag">#{t}</span>)}
+          <PostStats slug={post.data.slug} client:load />
         </p>
         {post.data.cover && (
           <Image
@@ -58,6 +63,12 @@ const toc = headings.filter((h) => h.depth <= 3);
       <div class="prose">
         <Content />
       </div>
+
+      <div class="post-actions">
+        <LikeButton slug={post.data.slug} client:visible />
+      </div>
+
+      {post.data.comments && <CommentSection slug={post.data.slug} client:visible />}
     </article>
 
     <nav class="back">
@@ -142,5 +153,10 @@ const toc = headings.filter((h) => h.depth <= 3);
   .back {
     max-width: 38em;
     margin: 3rem auto 0;
+  }
+  .post-actions {
+    max-width: 38em;
+    margin: 3rem auto 0;
+    text-align: center;
   }
 </style>

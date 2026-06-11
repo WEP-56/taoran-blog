@@ -2,9 +2,15 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { syncPostsFromContent } from "./content/sync";
 import { runMigrations } from "./db/client";
+import { publicRoutes } from "./routes/public";
 
 runMigrations();
+
+const sync = syncPostsFromContent();
+console.log(`[taoran-server] content sync: ${sync.synced} posts`);
+if (sync.errors.length) console.warn("[taoran-server] frontmatter 校验失败：", sync.errors);
 
 const app = new Hono();
 
@@ -24,8 +30,8 @@ app.get("/api/health", (c) =>
   c.json({ ok: true, name: "taoran-server", version: "0.0.1" }),
 );
 
-// 公开接口挂载点（/api/v1/*，M3 实现，见 docs/07-data.md §5）
-app.get("/api/v1/ping", (c) => c.json({ pong: true }));
+// 公开接口（docs/07-data.md §5）
+app.route("/api/v1", publicRoutes);
 
 // 管理接口挂载点（/api/admin/*，M4 实现，见 docs/06-site-admin.md §4）
 
