@@ -4,13 +4,18 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./hero": "./src/scenes/hero.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "three": "^0.175.0"
+  },
   "devDependencies": {
     "@taoran/config": "workspace:*",
+    "@types/three": "^0.175.0",
     "typescript": "^5.8.0"
   }
 }

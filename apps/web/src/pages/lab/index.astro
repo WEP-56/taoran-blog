@@ -1,0 +1,106 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const toys = [
+  {
+    title: "碎陶罐",
+    desc: "404 页的彩蛋玩具：碎片可拖拽抛掷，拼回轮廓有惊喜。",
+    href: "/404",
+    badge: "可玩",
+    ready: true,
+  },
+  {
+    title: "会记仇的粘土球",
+    desc: "首页主视觉：按住搓、双击戳，WebGPU 渲染（不支持时自动降到 WebGL）。",
+    href: "/",
+    badge: "WebGPU / WebGL",
+    ready: true,
+  },
+  {
+    title: "捏泥工坊",
+    desc: "自由雕刻一块泥并导出作品。",
+    href: null,
+    badge: "烧制中 · M5.5",
+    ready: false,
+  },
+  {
+    title: "泥点雨",
+    desc: "十万颗泥点的 compute shader 玩具，手写 WGSL。",
+    href: null,
+    badge: "烧制中 · M5.5",
+    ready: false,
+  },
+];
+---
+
+<Base title="实验室 · 陶然">
+  <main>
+    <h1>实验室</h1>
+    <p class="intro">炫技专区：这里的东西没什么用，但很好玩。每件玩具都标注了所需能力，并有降级处理。</p>
+    <div class="toy-grid">
+      {
+        toys.map((toy, i) =>
+          toy.ready && toy.href ? (
+            <a class="clay-card toy reveal" style={`--i:${i}`} data-hoverable="true" href={toy.href}>
+              <span class="badge">{toy.badge}</span>
+              <h2>{toy.title}</h2>
+              <p>{toy.desc}</p>
+            </a>
+          ) : (
+            <div class="clay-card toy pending reveal" style={`--i:${i}`}>
+              <span class="badge">{toy.badge}</span>
+              <h2>{toy.title}</h2>
+              <p>{toy.desc}</p>
+            </div>
+          ),
+        )
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .intro {
+    color: var(--clay-ink-2);
+    max-width: 38em;
+  }
+  .toy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+  .toy {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+  }
+  .toy.pending {
+    opacity: 0.65;
+  }
+  .toy h2 {
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--clay-sun);
+    color: var(--clay-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.1em 0.8em;
+    border-radius: 999px;
+    box-shadow: var(--clay-elev-pressed);
+  }
+  .toy.pending .badge {
+    background: var(--clay-surface-2);
+    color: var(--clay-ink-2);
+  }
+</style>

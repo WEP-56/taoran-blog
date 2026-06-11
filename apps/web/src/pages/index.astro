@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
+import { ClayHero } from "../islands/ClayHero";
 import { loadMoments } from "../lib/moments";
 import site from "../../../../content/site.json";
 
@@ -31,10 +32,8 @@ const fmt = (d: Date) => d.toLocaleDateString("zh-CN", { month: "long", day: "nu
           <a class="clay-btn" data-variant="soft" href="/about/">关于我</a>
         </p>
       </div>
-      <div class="hero-clay" aria-hidden="true">
-        {/* M5 替换为 WebGPU 粘土球（docs/08-webgpu.md §3.1）；现为 CSS 占位 blob */}
-        <div class="blob"></div>
-        <p class="hero-hint">（未来这里有颗会记仇的粘土球）</p>
+      <div class="hero-clay">
+        <ClayHero client:visible />
       </div>
     </section>
 
@@ -156,25 +155,6 @@ const fmt = (d: Date) => d.toLocaleDateString("zh-CN", { month: "long", day: "nu
   .hero-clay {
     text-align: center;
   }
-  .blob {
-    width: min(220px, 50vw);
-    aspect-ratio: 1;
-    margin: 0 auto;
-    background: var(--clay-primary);
-    border-radius: var(--clay-r-blob);
-    box-shadow: var(--clay-elev-raised);
-    animation: blob-breathe 7s ease-in-out infinite;
-  }
-  @keyframes blob-breathe {
-    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-    33% { border-radius: 55% 45% 35% 65% / 50% 60% 40% 50%; }
-    66% { border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%; }
-  }
-  .hero-hint {
-    color: var(--clay-ink-2);
-    font-size: 0.8rem;
-    font-family: var(--font-display);
-  }
 
   /* featured + latest */
   .featured-card {
@@ -261,5 +241,41 @@ const fmt = (d: Date) => d.toLocaleDateString("zh-CN", { month: "long", day: "nu
   .mood {
     font-size: 1.2em;
     margin-right: 0.25em;
+  }
+</style>
+
+<style is:global>
+  /* ClayHero 岛屿（React 内部类名，需全局作用域） */
+  .clay-hero {
+    position: relative;
+    text-align: center;
+  }
+  .clay-hero-canvas {
+    width: min(340px, 72vw);
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+  .clay-hero-canvas[data-state="loading"],
+  .clay-hero-canvas[data-state="static"] {
+    display: none;
+  }
+  .clay-hero-blob {
+    width: min(220px, 50vw);
+    aspect-ratio: 1;
+    margin: 2rem auto;
+    background: var(--clay-primary);
+    border-radius: var(--clay-r-blob);
+    box-shadow: var(--clay-elev-raised);
+    animation: blob-breathe 7s ease-in-out infinite;
+  }
+  @keyframes blob-breathe {
+    0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    33% { border-radius: 55% 45% 35% 65% / 50% 60% 40% 50%; }
+    66% { border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%; }
+  }
+  .clay-hero-hint {
+    color: var(--clay-ink-2);
+    font-size: 0.8rem;
+    font-family: var(--font-display);
   }
 </style>
