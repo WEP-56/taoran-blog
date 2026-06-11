@@ -1,0 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--clay-bg);
+  color: var(--clay-ink);
+  font-family: var(--font-body);
+  font-size: 15px; /* admin 取紧凑密度档（docs/06-site-admin.md §1） */
+  line-height: 1.7;
+  display: grid;
+  place-items: center;
+}
+
+.panel {
+  background: var(--clay-surface);
+  border-radius: var(--clay-r-lg);
+  box-shadow: var(--clay-elev-rest);
+  padding: 2rem 2.5rem;
+  max-width: 26rem;
+  text-align: center;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.2rem 0.9rem;
+  border-radius: var(--clay-r-sm);
+  font-weight: 700;
+}
+
+.status.ok {
+  background: var(--clay-accent);
+  color: #fff9f0;
+}
+
+.status.down {
+  background: var(--clay-danger);
+  color: #fff9f0;
+}

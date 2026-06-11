@@ -1,0 +1,99 @@
+/**
+ * 陶然设计令牌 · 真源
+ * 规格见 docs/03-design-system.md（颜色/形状）与 docs/04-motion.md（动效）。
+ * 任何组件不得硬编码色值——一律引用本文件变量。
+ */
+
+/* ── 亮色「日晒陶坊」 ───────────────────────────── */
+:root,
+html[data-theme="light"] {
+  --clay-bg: #faf3e9;
+  --clay-surface: #f6e8d8;
+  --clay-surface-2: #fff9f0;
+  --clay-primary: #e07856;
+  --clay-primary-deep: #c9603f;
+  --clay-accent: #9caf88;
+  --clay-sun: #f2c94c;
+  --clay-blush: #efa48b;
+  --clay-ink: #4a3b32;
+  --clay-ink-2: #8a7263;
+  --clay-line: #e5d3bf;
+  --clay-danger: #d45d4e;
+
+  /* 粘土阴影配方的三个分量（亮面/暗面/落影） */
+  --clay-sh-light: rgba(255, 255, 255, 0.65);
+  --clay-sh-dark: rgba(197, 153, 124, 0.35);
+  --clay-sh-drop: rgba(180, 140, 110, 0.25);
+}
+
+/* ── 暗色「窑变之夜」 ───────────────────────────── */
+html[data-theme="dark"] {
+  --clay-bg: #27201b;
+  --clay-surface: #332a23;
+  --clay-surface-2: #3d332b;
+  --clay-primary: #f08a66;
+  --clay-primary-deep: #f49d7f;
+  --clay-accent: #a9bd96;
+  --clay-sun: #e8c463;
+  --clay-blush: #d98a72;
+  --clay-ink: #f3e9dd;
+  --clay-ink-2: #b9a08f;
+  --clay-line: #4a3d33;
+  --clay-danger: #e06c5c;
+
+  --clay-sh-light: rgba(255, 235, 215, 0.07);
+  --clay-sh-dark: rgba(0, 0, 0, 0.4);
+  --clay-sh-drop: rgba(0, 0, 0, 0.35);
+}
+
+:root {
+  /* ── 圆角 ── */
+  --clay-r-sm: 12px;
+  --clay-r-md: 20px;
+  --clay-r-lg: 28px;
+  --clay-r-xl: 40px;
+  --clay-r-blob: 30% 70% 70% 30% / 30% 30% 70% 70%;
+
+  /* ── 阴影档位 ── */
+  --clay-elev-rest:
+    inset -8px -8px 16px var(--clay-sh-dark),
+    inset 8px 8px 16px var(--clay-sh-light),
+    12px 16px 32px var(--clay-sh-drop);
+  --clay-elev-raised:
+    inset -8px -8px 16px var(--clay-sh-dark),
+    inset 8px 8px 16px var(--clay-sh-light),
+    16px 24px 48px var(--clay-sh-drop);
+  --clay-elev-pressed:
+    inset -4px -4px 8px var(--clay-sh-dark),
+    inset 4px 4px 8px var(--clay-sh-light),
+    4px 6px 12px var(--clay-sh-drop);
+
+  /* ── 动效 ── */
+  --mo-fast: 140ms;
+  --mo-base: 240ms;
+  --mo-slow: 420ms;
+  --mo-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --mo-ease-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── 字体 ── */
+  --font-display: "LXGW WenKai Screen", "Noto Sans SC", system-ui, sans-serif;
+  --font-body: "Nunito", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ── 基础粘土块 ── */
+.clay {
+  background: var(--clay-surface);
+  border-radius: var(--clay-r-lg);
+  box-shadow: var(--clay-elev-rest);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

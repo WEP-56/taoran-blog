@@ -1,0 +1,13 @@
+{
+  "name": "陶然",
+  "tagline": "陶者，黏土也；陶然，乐也。",
+  "nav": [
+    { "label": "文章", "href": "/posts/" },
+    { "label": "归档", "href": "/archive/" },
+    { "label": "动态", "href": "/moments/" },
+    { "label": "友链", "href": "/friends/" },
+    { "label": "关于", "href": "/about/" },
+    { "label": "实验室", "href": "/lab/" }
+  ],
+  "footer": "本站是块粘土。"
+}

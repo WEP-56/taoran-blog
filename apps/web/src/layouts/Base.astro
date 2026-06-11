@@ -1,0 +1,29 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "陶然 · Taoran", description = "一团温暖的粘土博客" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <script is:inline>
+      // 首屏防闪烁：在绘制前应用主题（docs/05-site-web.md §3）
+      const saved = localStorage.getItem("taoran:theme");
+      const system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = saved ?? system;
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

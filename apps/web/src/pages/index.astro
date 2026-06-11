@@ -1,0 +1,154 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base>
+  <main>
+    <section class="hero">
+      <h1>陶然 <span class="en">Taoran</span></h1>
+      <p class="tagline">陶者，黏土也；陶然，乐也。</p>
+      <p class="note">
+        M0 脚手架已就绪。本页用于实机验证设计令牌——试试按下面的按钮、切换主题。
+      </p>
+    </section>
+
+    <section class="grid">
+      <div class="clay card">
+        <h2>粘土卡片</h2>
+        <p>
+          双内阴影 + 大圆角 + 柔和落影。hover 时抬升，规格见
+          <code>docs/03-design-system.md</code>。
+        </p>
+        <button class="clay-btn primary" type="button">捏一下</button>
+        <button class="clay-btn soft" type="button" id="theme-toggle">窑变（切换主题）</button>
+      </div>
+
+      <div class="clay card">
+        <h2>凹陷输入</h2>
+        <p>输入框是泥上压出的槽：</p>
+        <input class="clay-input" type="text" placeholder="在泥上写点什么……" />
+      </div>
+
+      <div class="clay card">
+        <h2>泥团</h2>
+        <div class="blob" aria-hidden="true"></div>
+        <p>呼吸变形的装饰 blob，未来散布在 hero 与空状态。</p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  const toggle = document.getElementById("theme-toggle");
+  toggle?.addEventListener("click", () => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    localStorage.setItem("taoran:theme", next);
+  });
+</script>
+
+<style>
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  .hero h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: var(--clay-primary-deep);
+  }
+  .hero .en {
+    font-size: 1.5rem;
+    color: var(--clay-ink-2);
+  }
+  .tagline {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--clay-ink-2);
+  }
+  .note {
+    max-width: 38em;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  .card {
+    padding: 1.75rem;
+    transition:
+      box-shadow var(--mo-base) var(--mo-ease-out),
+      transform var(--mo-base) var(--mo-ease-out);
+  }
+  @media (hover: hover) {
+    .card:hover {
+      box-shadow: var(--clay-elev-raised);
+      transform: translateY(-3px) rotate(0.4deg);
+    }
+  }
+  .card h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+  }
+  .clay-btn {
+    font: inherit;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    padding: 0.6rem 1.4rem;
+    margin-right: 0.75rem;
+    border-radius: var(--clay-r-md);
+    box-shadow: var(--clay-elev-rest);
+    transition:
+      transform var(--mo-fast) var(--mo-ease-squish),
+      box-shadow var(--mo-fast) var(--mo-ease-out);
+  }
+  .clay-btn:active {
+    transform: scale(0.97);
+    box-shadow: var(--clay-elev-pressed);
+  }
+  .clay-btn.primary {
+    background: var(--clay-primary);
+    color: #fff9f0;
+  }
+  .clay-btn.soft {
+    background: var(--clay-surface);
+    color: var(--clay-ink);
+  }
+  .clay-input {
+    font: inherit;
+    width: 100%;
+    border: none;
+    padding: 0.7rem 1rem;
+    border-radius: var(--clay-r-md);
+    background: var(--clay-surface-2);
+    color: var(--clay-ink);
+    box-shadow:
+      inset 4px 4px 10px var(--clay-sh-dark),
+      inset -4px -4px 10px var(--clay-sh-light);
+  }
+  .clay-input:focus-visible {
+    outline: 3px solid var(--clay-primary);
+    outline-offset: 0;
+  }
+  .blob {
+    width: 96px;
+    height: 96px;
+    background: var(--clay-blush);
+    border-radius: var(--clay-r-blob);
+    box-shadow: var(--clay-elev-rest);
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,
+    100% {
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    50% {
+      border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+    }
+  }
+</style>

@@ -1,0 +1,29 @@
+{
+  "name": "@taoran/server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.0",
+    "@taoran/content": "workspace:*",
+    "better-sqlite3": "^12.0.0",
+    "drizzle-orm": "^0.44.0",
+    "hono": "^4.6.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@taoran/config": "workspace:*",
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/node": "^24.0.0",
+    "drizzle-kit": "^0.31.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@taoran/content",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@taoran/config": "workspace:*",
+    "typescript": "^5.8.0"
+  }
+}

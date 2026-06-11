@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.astro/
+.turbo/
+*.tsbuildinfo
+
+# 运行时数据（备份面之一，不进 git，见 docs/07-data.md）
+data/
+
+.env
+.env.local
+.DS_Store
