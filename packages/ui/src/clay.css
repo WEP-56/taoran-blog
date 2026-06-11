@@ -1,0 +1,222 @@
+/**
+ * Clay 组件样式 · 规格见 docs/03-design-system.md §5，动效见 docs/04-motion.md §3
+ * 依赖 tokens.css 的变量；本文件不出现任何硬编码色值/时长。
+ */
+
+/* ── ClayButton ── */
+.clay-btn {
+  font: inherit;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--clay-r-md);
+  box-shadow: var(--clay-elev-rest);
+  transition:
+    transform var(--mo-fast) var(--mo-ease-squish),
+    box-shadow var(--mo-fast) var(--mo-ease-out),
+    background var(--mo-fast) var(--mo-ease-out);
+}
+.clay-btn:active {
+  transform: scale(0.97);
+  box-shadow: var(--clay-elev-pressed);
+}
+.clay-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.clay-btn[data-variant="primary"] {
+  background: var(--clay-primary);
+  color: var(--clay-surface-2);
+}
+.clay-btn[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--clay-primary-deep);
+}
+.clay-btn[data-variant="soft"] {
+  background: var(--clay-surface);
+  color: var(--clay-ink);
+}
+.clay-btn[data-variant="ghost"] {
+  background: transparent;
+  color: var(--clay-ink);
+  box-shadow: none;
+}
+.clay-btn[data-variant="ghost"]:hover:not(:disabled) {
+  background: var(--clay-surface);
+}
+
+/* ── ClayCard ── */
+.clay-card {
+  background: var(--clay-surface);
+  border-radius: var(--clay-r-lg);
+  box-shadow: var(--clay-elev-rest);
+  padding: 1.75rem;
+  transition:
+    box-shadow var(--mo-base) var(--mo-ease-out),
+    transform var(--mo-base) var(--mo-ease-out);
+}
+@media (hover: hover) {
+  .clay-card[data-hoverable="true"]:hover {
+    box-shadow: var(--clay-elev-raised);
+    transform: translateY(-3px) rotate(0.4deg);
+  }
+}
+
+/* ── ClayTag ── */
+.clay-tag {
+  display: inline-block;
+  padding: 0.15em 0.9em;
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--clay-surface-2);
+  box-shadow: var(--clay-elev-pressed);
+}
+.clay-tag[data-hue="accent"] { background: var(--clay-accent); }
+.clay-tag[data-hue="sun"] { background: var(--clay-sun); color: var(--clay-ink); }
+.clay-tag[data-hue="blush"] { background: var(--clay-blush); }
+
+/* ── ClayInput / ClayTextarea：凹陷式 ── */
+.clay-input,
+.clay-textarea {
+  font: inherit;
+  width: 100%;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: var(--clay-r-md);
+  background: var(--clay-surface-2);
+  color: var(--clay-ink);
+  box-shadow:
+    inset 4px 4px 10px var(--clay-sh-dark),
+    inset -4px -4px 10px var(--clay-sh-light);
+  transition: outline-color var(--mo-fast) var(--mo-ease-out);
+}
+.clay-input::placeholder,
+.clay-textarea::placeholder {
+  color: var(--clay-ink-2);
+}
+.clay-input:focus-visible,
+.clay-textarea:focus-visible {
+  outline: 3px solid var(--clay-primary);
+  outline-offset: 0;
+}
+.clay-textarea {
+  resize: vertical;
+  min-height: 6em;
+}
+
+/* ── ClayToggle：会被压扁再弹回的泥球 ── */
+.clay-toggle {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 32px;
+}
+.clay-toggle input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.clay-toggle-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--clay-surface-2);
+  box-shadow:
+    inset 4px 4px 8px var(--clay-sh-dark),
+    inset -4px -4px 8px var(--clay-sh-light);
+  transition: background var(--mo-base) var(--mo-ease-out);
+  pointer-events: none;
+}
+.clay-toggle input:checked + .clay-toggle-track {
+  background: var(--clay-accent);
+}
+.clay-toggle-knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--clay-surface);
+  box-shadow: var(--clay-elev-pressed);
+  transition: translate var(--mo-base) var(--mo-ease-squish), scale var(--mo-fast) var(--mo-ease-out);
+  pointer-events: none;
+}
+.clay-toggle input:checked + .clay-toggle-track .clay-toggle-knob {
+  translate: 24px 0;
+}
+.clay-toggle input:active + .clay-toggle-track .clay-toggle-knob {
+  scale: 1.2 0.85;
+}
+.clay-toggle input:focus-visible + .clay-toggle-track {
+  outline: 3px solid var(--clay-primary);
+  outline-offset: 2px;
+}
+
+/* ── ClayAvatar ── */
+.clay-avatar {
+  display: inline-block;
+  border-radius: var(--clay-r-blob);
+  box-shadow: var(--clay-elev-rest);
+  object-fit: cover;
+  background: var(--clay-surface);
+  transition: rotate var(--mo-base) var(--mo-ease-squish);
+}
+@media (hover: hover) {
+  .clay-avatar:hover {
+    rotate: -3deg;
+  }
+}
+
+/* ── ClayDivider：手绘波浪 ── */
+.clay-divider {
+  display: block;
+  width: 100%;
+  height: 14px;
+  color: var(--clay-line);
+  margin: 1.5rem 0;
+}
+
+/* ── ClayProgress：搓泥条 ── */
+.clay-progress {
+  height: 14px;
+  border-radius: 999px;
+  background: var(--clay-surface-2);
+  box-shadow:
+    inset 3px 3px 6px var(--clay-sh-dark),
+    inset -3px -3px 6px var(--clay-sh-light);
+  overflow: hidden;
+}
+.clay-progress-bar {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--clay-primary);
+  box-shadow: var(--clay-elev-pressed);
+  transition: width var(--mo-base) var(--mo-ease-squish);
+}
+
+/* ── ClaySkeleton：呼吸 blob ── */
+.clay-skeleton {
+  background: var(--clay-surface);
+  box-shadow: var(--clay-elev-pressed);
+  border-radius: var(--clay-r-md);
+  animation: clay-skeleton-breathe 2.4s ease-in-out infinite;
+}
+.clay-skeleton[data-shape="blob"] {
+  border-radius: var(--clay-r-blob);
+}
+@keyframes clay-skeleton-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}

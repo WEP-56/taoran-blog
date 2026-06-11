@@ -1,0 +1,66 @@
+---
+title: 窑火测试：代码高亮
+slug: shiki-kiln-test
+date: 2026-06-09T20:00:00+08:00
+summary: M1 验收用：Shiki 陶土双主题在 TS / CSS / Bash / JSON 下的表现。
+tags: [测试, 前端]
+cover: ./cover.jpg
+status: published
+---
+
+代码块应呈"凹陷的泥板"：内阴影、圆角，随明暗主题切换配色（亮色是陶坯，暗色是釉面）。
+
+## TypeScript
+
+```ts
+import { detectClayTier, type ClayTier } from "@taoran/clay-engine";
+
+/** 能力分级：T0 WebGPU → T1 WebGL → T2 静态图 */
+export async function mountHero(canvas: HTMLCanvasElement): Promise<void> {
+  const tier: ClayTier = await detectClayTier();
+  if (tier === "t2-static") return; // 静态降级，不初始化 3D
+
+  const dpr = Math.min(window.devicePixelRatio, tier === "t0-webgpu" ? 2 : 1.5);
+  canvas.width = canvas.clientWidth * dpr;
+  console.log(`clay hero mounted at ${tier}, dpr=${dpr}`);
+}
+```
+
+## CSS
+
+```css
+/* 标准粘土阴影配方 */
+.clay {
+  background: var(--clay-surface);
+  border-radius: var(--clay-r-lg);
+  box-shadow:
+    inset -8px -8px 16px rgba(197, 153, 124, 0.35),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.65),
+    12px 16px 32px rgba(180, 140, 110, 0.25);
+}
+```
+
+## Bash
+
+```bash
+# 一键起三端
+pnpm dev
+curl -s http://localhost:8787/api/health | jq .ok
+```
+
+## JSON
+
+```json
+{
+  "name": "陶然",
+  "tagline": "陶者，黏土也；陶然，乐也。",
+  "clay": true,
+  "tiers": ["t0-webgpu", "t1-webgl", "t2-static"]
+}
+```
+
+## 长行横向滚动
+
+```ts
+export const veryLongLine = "这一行特别长——用来验证代码块在窄屏下出现横向滚动条而不是把页面撑破——0123456789012345678901234567890123456789";
+```

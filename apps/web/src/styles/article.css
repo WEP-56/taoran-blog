@@ -1,0 +1,156 @@
+/* 文章正文排版（docs/05-site-web.md §2.3）。行宽 38em、行高 1.85。 */
+
+.prose {
+  max-width: 38em;
+  margin: 0 auto;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-display);
+  color: var(--clay-ink);
+  margin-top: 2em;
+  scroll-margin-top: 5rem;
+}
+
+.prose p {
+  margin: 1.25em 0;
+}
+
+.prose a {
+  color: var(--clay-primary-deep);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.prose strong {
+  color: var(--clay-ink);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--clay-r-lg);
+  box-shadow: var(--clay-elev-rest);
+}
+
+.prose blockquote {
+  margin: 1.5em 0;
+  padding: 0.5em 1.25em;
+  border-left: 6px solid var(--clay-blush);
+  border-radius: var(--clay-r-sm);
+  background: var(--clay-surface);
+  color: var(--clay-ink-2);
+}
+
+.prose hr {
+  border: none;
+  border-top: 2px dashed var(--clay-line);
+  margin: 2.5em 0;
+}
+
+/* 行内代码：小泥片 */
+.prose :not(pre) > code {
+  background: var(--clay-surface);
+  padding: 0.15em 0.45em;
+  border-radius: var(--clay-r-sm);
+  font-size: 0.88em;
+  box-shadow: inset 2px 2px 4px var(--clay-sh-dark), inset -2px -2px 4px var(--clay-sh-light);
+}
+
+/* 代码块：凹陷的泥板。双主题由 Shiki CSS 变量驱动 */
+.prose pre {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--clay-r-md);
+  box-shadow:
+    inset 4px 4px 10px var(--clay-sh-dark),
+    inset -4px -4px 10px var(--clay-sh-light);
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.7;
+}
+
+html[data-theme="dark"] .prose pre.astro-code,
+html[data-theme="dark"] .prose pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+}
+
+/* 表格 */
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--clay-r-md);
+  box-shadow: var(--clay-elev-pressed);
+  overflow: hidden;
+  font-size: 0.95em;
+}
+
+.prose th {
+  background: var(--clay-surface);
+  font-family: var(--font-display);
+  text-align: left;
+}
+
+.prose th,
+.prose td {
+  padding: 0.6em 1em;
+  border-bottom: 1px solid var(--clay-line);
+}
+
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+/* 提示容器 :::note / :::tip / :::warn */
+.prose .callout {
+  margin: 1.5em 0;
+  padding: 1em 1.5em;
+  border-radius: var(--clay-r-md);
+  box-shadow: var(--clay-elev-pressed);
+  background: var(--clay-surface);
+}
+
+.prose .callout > :first-child {
+  margin-top: 0;
+}
+
+.prose .callout > :last-child {
+  margin-bottom: 0;
+}
+
+.prose .callout-note {
+  border-left: 6px solid var(--clay-accent);
+}
+
+.prose .callout-tip {
+  border-left: 6px solid var(--clay-sun);
+}
+
+.prose .callout-warn {
+  border-left: 6px solid var(--clay-danger);
+}
+
+/* 脚注 */
+.prose .footnotes {
+  margin-top: 3em;
+  font-size: 0.9em;
+  color: var(--clay-ink-2);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+
+.prose li {
+  margin: 0.4em 0;
+}
+
+.prose li::marker {
+  color: var(--clay-primary);
+}

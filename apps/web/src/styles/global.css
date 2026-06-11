@@ -1,4 +1,14 @@
+/* 字体：预子集化分包的 woff2（unicode-range 按需加载），见 docs/03-design-system.md §4 */
+@import "lxgw-wenkai-screen-webfont/style.css";
+@import "@fontsource/noto-sans-sc/400.css";
+@import "@fontsource/noto-sans-sc/700.css";
+@import "@fontsource/nunito/400.css";
+@import "@fontsource/nunito/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
 @import "@taoran/ui/tokens.css";
+@import "@taoran/ui/clay.css";
 
 * {
   box-sizing: border-box;
@@ -27,6 +37,11 @@ h3 {
 
 a {
   color: var(--clay-primary-deep);
+}
+
+code,
+pre {
+  font-family: var(--font-mono);
 }
 
 :focus-visible {

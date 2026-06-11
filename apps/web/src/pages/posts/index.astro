@@ -1,0 +1,82 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+
+const posts = (await getCollection("posts", (p) => p.data.status === "published")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Base title="文章 · 陶然">
+  <main>
+    <h1>文章</h1>
+    <div class="post-grid">
+      {
+        posts.map((post) => (
+          <a class="clay-card post-card" data-hoverable="true" href={`/posts/${post.data.slug}/`}>
+            {post.data.cover && (
+              <Image class="post-cover" src={post.data.cover} alt="" widths={[480, 960]} sizes="(max-width: 768px) 100vw, 480px" />
+            )}
+            <h2>{post.data.pinned && <span title="置顶">📌 </span>}{post.data.title}</h2>
+            {post.data.summary && <p class="summary">{post.data.summary}</p>}
+            <p class="meta">
+              <time datetime={post.data.date.toISOString()}>
+                {post.data.date.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}
+              </time>
+              {post.data.tags.map((t) => (
+                <span class="tag">#{t}</span>
+              ))}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  .post-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .post-card h2 {
+    font-size: 1.25rem;
+    margin: 0.75rem 0 0.25rem;
+  }
+  .post-cover {
+    width: 100%;
+    height: auto;
+    border-radius: var(--clay-r-md);
+    box-shadow: var(--clay-elev-pressed);
+  }
+  .summary {
+    color: var(--clay-ink-2);
+    margin: 0.5rem 0;
+  }
+  .meta {
+    font-size: 0.85rem;
+    color: var(--clay-ink-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75em;
+    margin-bottom: 0;
+  }
+  .tag {
+    color: var(--clay-primary-deep);
+  }
+</style>

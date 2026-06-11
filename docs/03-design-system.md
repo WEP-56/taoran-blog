@@ -92,7 +92,7 @@ Claymorphism 三要素，全站组件统一遵守：
 | 西文正文 | Nunito | 圆端 sans，与粘土圆角呼应 |
 | 代码 | JetBrains Mono | 配 Shiki 自定义"陶土"高亮主题 |
 
-**子集化是硬要求**：用 `cn-font-split` 构建期把两套中文字体切为按需加载的 woff2 分片（每片 ~50–200KB），`font-display: swap` + 首页关键字符内联预载。正文字号 17px / 行高 1.85 / 段距 1.25em，行宽 max 38em。
+**子集化是硬要求**：M1 起采用预子集化的 npm 字体包（`lxgw-wenkai-screen-webfont`、`@fontsource/noto-sans-sc` 等，均已按 unicode-range 切为按需加载的 woff2 分片），效果等同自跑 `cn-font-split` 且零维护成本；`font-display: swap`。正文字号 17px / 行高 1.85 / 段距 1.25em，行宽 max 38em。
 
 ## 5. 组件清单（`packages/ui`，前缀 Clay）
 

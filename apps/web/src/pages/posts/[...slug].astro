@@ -1,0 +1,125 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import "../../styles/article.css";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", (p) => p.data.status === "published");
+  return posts.map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings, remarkPluginFrontmatter } = await render(post);
+const readingMinutes = remarkPluginFrontmatter.readingMinutes as number | undefined;
+const toc = headings.filter((h) => h.depth <= 3);
+---
+
+<Base title={`${post.data.title} · 陶然`} description={post.data.summary}>
+  <main>
+    <article>
+      <header class="post-header">
+        <h1>{post.data.title}</h1>
+        <p class="meta">
+          <time datetime={post.data.date.toISOString()}>
+            {post.data.date.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}
+          </time>
+          {readingMinutes && <span>约 {readingMinutes} 分钟</span>}
+          {post.data.tags.map((t) => <span class="tag">#{t}</span>)}
+        </p>
+        {post.data.cover && (
+          <Image
+            class="cover"
+            src={post.data.cover}
+            alt=""
+            widths={[768, 1200]}
+            sizes="(max-width: 768px) 100vw, 720px"
+            loading="eager"
+          />
+        )}
+      </header>
+
+      {
+        post.data.toc && toc.length > 1 && (
+          <details class="clay-card toc">
+            <summary>目录</summary>
+            <ul>
+              {toc.map((h) => (
+                <li class={`toc-d${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        )
+      }
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+
+    <nav class="back">
+      <a href="/posts/">← 回文章列表</a>
+    </nav>
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  .post-header {
+    max-width: 38em;
+    margin: 0 auto 2rem;
+  }
+  .post-header h1 {
+    color: var(--clay-primary-deep);
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .meta {
+    color: var(--clay-ink-2);
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+  }
+  .tag {
+    color: var(--clay-primary-deep);
+  }
+  .cover {
+    width: 100%;
+    height: auto;
+    border-radius: var(--clay-r-lg);
+    box-shadow: var(--clay-elev-rest);
+    margin-top: 1.5rem;
+  }
+  .toc {
+    max-width: 38em;
+    margin: 0 auto 2rem;
+    padding: 1rem 1.5rem;
+  }
+  .toc summary {
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+  .toc ul {
+    list-style: none;
+    padding-left: 0.5em;
+    margin: 0.5em 0 0;
+  }
+  .toc-d3 {
+    padding-left: 1.5em;
+  }
+  .toc a {
+    text-decoration: none;
+  }
+  .back {
+    max-width: 38em;
+    margin: 3rem auto 0;
+  }
+</style>

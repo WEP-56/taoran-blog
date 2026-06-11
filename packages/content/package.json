@@ -4,16 +4,21 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./remark": "./src/remark.ts",
+    "./shiki": "./src/shiki.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "mdast-util-to-string": "^4.0.0",
+    "unist-util-visit": "^5.0.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@taoran/config": "workspace:*",
+    "@types/mdast": "^4.0.0",
     "typescript": "^5.8.0"
   }
 }

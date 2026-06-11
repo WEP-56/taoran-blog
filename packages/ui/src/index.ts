@@ -1,5 +1,23 @@
 /**
  * @taoran/ui — 粘土组件库
- * M0 阶段仅发布设计令牌（tokens.css）；Clay* 组件按 docs/03-design-system.md §5 在 M1 落地。
+ * 使用方需同时引入 "@taoran/ui/tokens.css" 与 "@taoran/ui/clay.css"。
  */
-export const UI_VERSION = "0.0.1";
+export {
+  ClayButton,
+  ClayCard,
+  ClayTag,
+  ClayInput,
+  ClayTextarea,
+  ClayToggle,
+  ClayAvatar,
+  ClayDivider,
+  ClayProgress,
+  ClaySkeleton,
+  type ClayButtonProps,
+  type ClayCardProps,
+  type ClayTagProps,
+  type ClayToggleProps,
+  type ClayAvatarProps,
+  type ClayProgressProps,
+  type ClaySkeletonProps,
+} from "./components";

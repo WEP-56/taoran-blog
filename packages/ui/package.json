@@ -5,13 +5,19 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./tokens.css": "./src/tokens.css"
+    "./tokens.css": "./src/tokens.css",
+    "./clay.css": "./src/clay.css"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
   "devDependencies": {
     "@taoran/config": "workspace:*",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
     "typescript": "^5.8.0"
   }
 }

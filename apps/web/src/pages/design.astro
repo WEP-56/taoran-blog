@@ -1,0 +1,54 @@
+---
+import Base from "../layouts/Base.astro";
+import { DesignGallery } from "../islands/DesignGallery";
+---
+
+<Base title="设计系统 · 陶然">
+  <main>
+    <h1>设计系统预览</h1>
+    <p>
+      首批 10 个 Clay 组件（<code>packages/ui</code>）。本页是 UI 回归基线——改组件后到这里双主题走查。
+    </p>
+    <DesignGallery client:load />
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+  }
+</style>
+
+<style is:global>
+  .gallery section {
+    margin: 3rem 0;
+  }
+  .gallery h2 {
+    font-size: 1.1rem;
+    color: var(--clay-ink-2);
+    border-bottom: 2px dashed var(--clay-line);
+    padding-bottom: 0.4rem;
+  }
+  .gallery .row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .gallery .row > * {
+    flex: 1 1 220px;
+  }
+  .gallery .clay-btn {
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+  .gallery .hint {
+    color: var(--clay-ink-2);
+    font-size: 0.85rem;
+  }
+</style>
