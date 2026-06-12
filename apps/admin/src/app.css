@@ -219,6 +219,7 @@ body {
   grid-template-columns: 1fr 280px;
   gap: 1.5rem;
   align-items: start;
+  isolation: isolate;
 }
 @media (max-width: 900px) {
   .editor-page {
@@ -226,12 +227,17 @@ body {
   }
 }
 .title-input {
+  position: relative;
+  z-index: 2;
   font-size: 1.3rem;
   font-family: var(--font-display);
   font-weight: 700;
   margin-bottom: 1rem;
 }
 .md-editor {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
   background: var(--clay-surface-2);
   border-radius: var(--clay-r-md);
   box-shadow:
@@ -284,10 +290,13 @@ body {
   font-size: 0.9rem;
 }
 .editor-side {
+  position: relative;
+  z-index: 3;
   display: grid;
   gap: 1rem;
 }
 .side-card {
+  position: relative;
   padding: 1.1rem 1.25rem;
   display: grid;
   gap: 0.8rem;

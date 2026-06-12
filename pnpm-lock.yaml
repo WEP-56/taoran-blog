@@ -195,6 +195,9 @@ importers:
       '@types/three':
         specifier: ^0.175.0
         version: 0.175.0
+      '@webgpu/types':
+        specifier: ^0.1.40
+        version: 0.1.70
       typescript:
         specifier: ^5.8.0
         version: 5.9.3
