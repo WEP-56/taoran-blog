@@ -125,21 +125,23 @@ function RichToolbar({ editor }: { editor: Editor }) {
       {label}
     </button>
   );
-  const c = editor.chain().focus();
+  // 注意：editor.chain().focus() 绝不能在渲染期创建——TipTap 的 focus 命令在链构建时
+  // 就会调度 view.focus()（不等 .run()），渲染期调用会把焦点从其他输入框抢走。
+  const c = () => editor.chain().focus();
   return (
     <>
-      {btn("B", editor.isActive("bold"), () => c.toggleBold().run(), "加粗")}
-      {btn("I", editor.isActive("italic"), () => c.toggleItalic().run(), "斜体")}
-      {btn("H2", editor.isActive("heading", { level: 2 }), () => c.toggleHeading({ level: 2 }).run(), "二级标题")}
-      {btn("H3", editor.isActive("heading", { level: 3 }), () => c.toggleHeading({ level: 3 }).run(), "三级标题")}
-      {btn("•", editor.isActive("bulletList"), () => c.toggleBulletList().run(), "无序列表")}
-      {btn("1.", editor.isActive("orderedList"), () => c.toggleOrderedList().run(), "有序列表")}
-      {btn("❝", editor.isActive("blockquote"), () => c.toggleBlockquote().run(), "引用")}
-      {btn("</>", editor.isActive("codeBlock"), () => c.toggleCodeBlock().run(), "代码块")}
+      {btn("B", editor.isActive("bold"), () => c().toggleBold().run(), "加粗")}
+      {btn("I", editor.isActive("italic"), () => c().toggleItalic().run(), "斜体")}
+      {btn("H2", editor.isActive("heading", { level: 2 }), () => c().toggleHeading({ level: 2 }).run(), "二级标题")}
+      {btn("H3", editor.isActive("heading", { level: 3 }), () => c().toggleHeading({ level: 3 }).run(), "三级标题")}
+      {btn("•", editor.isActive("bulletList"), () => c().toggleBulletList().run(), "无序列表")}
+      {btn("1.", editor.isActive("orderedList"), () => c().toggleOrderedList().run(), "有序列表")}
+      {btn("❝", editor.isActive("blockquote"), () => c().toggleBlockquote().run(), "引用")}
+      {btn("</>", editor.isActive("codeBlock"), () => c().toggleCodeBlock().run(), "代码块")}
       {btn("🔗", editor.isActive("link"), () => {
         const url = prompt("链接地址：");
-        if (url) c.setLink({ href: url }).run();
-        else c.unsetLink().run();
+        if (url) c().setLink({ href: url }).run();
+        else c().unsetLink().run();
       }, "链接")}
     </>
   );
