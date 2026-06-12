@@ -1,0 +1,114 @@
+---
+import Base from "../../layouts/Base.astro";
+import { ClayAtelier } from "../../islands/ClayAtelier";
+---
+
+<Base title="捏泥工坊 · 陶然">
+  <main>
+    <p class="crumb"><a href="/lab/">← 实验室</a></p>
+    <h1>捏泥工坊</h1>
+    <p class="intro">
+      推、拉、抹平、戳洞，捏一团属于你的泥。WebGPU 渲染（不支持时自动降到 WebGL）；捏完可导出留念，或生成一条分享链接。
+    </p>
+    <ClayAtelier client:load />
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+    text-align: center;
+  }
+  .crumb {
+    text-align: left;
+    margin: 0 0 1rem;
+  }
+  .crumb a {
+    color: var(--clay-ink-2);
+    text-decoration: none;
+  }
+  h1 {
+    color: var(--clay-primary-deep);
+    margin: 0;
+  }
+  .intro {
+    color: var(--clay-ink-2);
+    max-width: 34em;
+    margin: 0.75rem auto 2rem;
+  }
+</style>
+
+<style is:global>
+  /* ClayAtelier 岛屿（React 内部类名，需全局作用域） */
+  .atelier {
+    text-align: center;
+  }
+  .atelier-canvas {
+    width: min(440px, 86vw);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    touch-action: none;
+  }
+  .atelier-tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem 1.4rem;
+    max-width: 42rem;
+    margin: 1.25rem auto 0;
+  }
+  .atelier-tools[data-busy="true"] {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .atelier-group {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .atelier-group .clay-btn {
+    padding: 0.35em 0.95em;
+    font-size: 0.95rem;
+  }
+  .atelier-swatch {
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--clay-elev-pressed);
+    transition: transform var(--mo-fast) var(--mo-ease-squish);
+  }
+  .atelier-swatch:hover:not(:disabled) {
+    transform: scale(1.1);
+  }
+  .atelier-swatch[data-active="true"] {
+    border-color: var(--clay-ink);
+    transform: scale(1.12);
+  }
+  .atelier-hint {
+    color: var(--clay-ink-2);
+    font-size: 0.85rem;
+    font-family: var(--font-display);
+    margin-top: 1rem;
+    min-height: 1.4em;
+  }
+  /* T2 静态降级 */
+  .atelier-blob {
+    width: min(240px, 60vw);
+    aspect-ratio: 1;
+    margin: 2rem auto 0;
+    background: var(--clay-primary);
+    border-radius: var(--clay-r-blob);
+    box-shadow: var(--clay-elev-raised);
+  }
+  .atelier-static-note {
+    color: var(--clay-ink-2);
+    max-width: 28em;
+    margin: 1.5rem auto 0;
+  }
+</style>

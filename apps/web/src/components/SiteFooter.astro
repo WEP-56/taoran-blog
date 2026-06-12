@@ -6,10 +6,34 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <p>
-    © {year} {site.name} · <a href="/rss.xml">RSS</a> · <a href="/sitemap-index.xml">Sitemap</a>
+    © {year} {site.name} · <a href="/rss.xml">RSS</a> · <a href="/sitemap-index.xml">Sitemap</a> ·
+    <button class="motion-toggle" type="button" data-motion-toggle>动效</button>
   </p>
   <p class="clay-note">{site.footer}</p>
 </footer>
+
+<script>
+  // 动效偏好开关：系统开了"减少动态效果"的访客可在站内强制开启（docs/04-motion.md §6 的逃生门）
+  function label(btn: HTMLElement): void {
+    const forced = localStorage.getItem("taoran:motion") === "force";
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    btn.textContent = forced ? "动效：强制开启 ✓" : reduced ? "动效：已被系统关闭（点击开启）" : "动效：跟随系统";
+  }
+  function init(): void {
+    document.querySelectorAll<HTMLElement>("[data-motion-toggle]").forEach(label);
+  }
+  document.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-motion-toggle]");
+    if (!btn) return;
+    const forced = localStorage.getItem("taoran:motion") === "force";
+    if (forced) localStorage.removeItem("taoran:motion");
+    else localStorage.setItem("taoran:motion", "force");
+    sessionStorage.removeItem("taoran:clay-tier"); // 能力分级重新检测
+    location.reload(); // 重载以重挂 3D 岛屿
+  });
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
 
 <style>
   .site-footer {
@@ -24,5 +48,15 @@ const year = new Date().getFullYear();
   .clay-note {
     font-family: var(--font-display);
     opacity: 0.7;
+  }
+  .motion-toggle {
+    border: none;
+    background: none;
+    font: inherit;
+    color: var(--clay-primary-deep);
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline dashed;
+    text-underline-offset: 3px;
   }
 </style>

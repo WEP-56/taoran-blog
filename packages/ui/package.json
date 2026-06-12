@@ -17,7 +17,6 @@
   "devDependencies": {
     "@taoran/config": "workspace:*",
     "@types/react": "^19.0.0",
-    "react": "^19.0.0",
     "typescript": "^5.8.0"
   }
 }

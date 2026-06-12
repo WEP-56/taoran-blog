@@ -29,6 +29,12 @@ const { title = "陶然 · Taoran", description = "一团温暖的粘土博客" 
           const saved = localStorage.getItem("taoran:theme");
           const system = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
           document.documentElement.dataset.theme = saved ?? system;
+          // 动效偏好：站内"强制开启"覆盖系统 reduced-motion（绘制前应用，避免动效闪断）
+          if (localStorage.getItem("taoran:motion") === "force") {
+            document.documentElement.dataset.motion = "force";
+          } else {
+            delete document.documentElement.dataset.motion;
+          }
         };
         apply();
         document.addEventListener("astro:after-swap", apply);

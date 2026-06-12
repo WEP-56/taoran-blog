@@ -7,6 +7,7 @@
 export type ClayTier = "t0-webgpu" | "t1-webgl" | "t2-static";
 
 const CACHE_KEY = "taoran:clay-tier";
+const MOTION_KEY = "taoran:motion"; // "force" = 用户显式要求动效，覆盖系统 reduced-motion
 
 export async function detectClayTier(): Promise<ClayTier> {
   const cached = sessionStorage.getItem(CACHE_KEY) as ClayTier | null;
@@ -17,9 +18,23 @@ export async function detectClayTier(): Promise<ClayTier> {
   return tier;
 }
 
+/** 用户在站内切换动效偏好后调用：清缓存，下次检测生效 */
+export function clearTierCache(): void {
+  sessionStorage.removeItem(CACHE_KEY);
+}
+
+function motionForced(): boolean {
+  try {
+    return localStorage.getItem(MOTION_KEY) === "force";
+  } catch {
+    return false;
+  }
+}
+
 async function probe(): Promise<ClayTier> {
-  // 用户偏好与设备约束优先于一切能力（docs/04-motion.md §6）
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return "t2-static";
+  // 用户偏好与设备约束优先于一切能力（docs/04-motion.md §6）；
+  // 站内"强制动效"开关可覆盖系统 reduced-motion（很多用户不知道自己系统关了动画）
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches && !motionForced()) return "t2-static";
 
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   if (nav.connection?.saveData) return "t2-static";

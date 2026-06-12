@@ -88,10 +88,11 @@ html[data-theme="dark"] {
   box-shadow: var(--clay-elev-rest);
 }
 
+/* 尊重系统"减少动态效果"；但允许用户在站内显式强制开启（html[data-motion="force"]，见页脚开关） */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  html:not([data-motion="force"]) *,
+  html:not([data-motion="force"]) *::before,
+  html:not([data-motion="force"]) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

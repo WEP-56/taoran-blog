@@ -21,4 +21,10 @@ export default defineConfig({
     },
     remarkPlugins: [remarkDirective, remarkCallouts, remarkReadingTime],
   },
+  vite: {
+    // monorepo 防双 React 实例（dev SSR 曾出现 Invalid hook call 警告）
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
+  },
 });

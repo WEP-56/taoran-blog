@@ -42,7 +42,9 @@ export function BrokenPot() {
     const host = hostRef.current;
     if (!host) return;
 
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced =
+      matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      localStorage.getItem("taoran:motion") !== "force";
     const rect = () => host.getBoundingClientRect();
 
     const shards: Shard[] = DEFS.map((d, i) => ({

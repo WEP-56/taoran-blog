@@ -1,1 +1,1 @@
-export { detectClayTier, type ClayTier } from "./capability";
+export { detectClayTier, clearTierCache, type ClayTier } from "./capability";
