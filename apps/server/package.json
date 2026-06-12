@@ -12,12 +12,14 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.0",
+    "@mdx-js/mdx": "^3.1.0",
     "@node-rs/argon2": "^2.0.0",
     "@taoran/content": "workspace:*",
     "better-sqlite3": "^12.0.0",
     "drizzle-orm": "^0.44.0",
     "gray-matter": "^4.0.3",
     "hono": "^4.6.0",
+    "remark-directive": "^4.0.0",
     "sharp": "^0.34.0",
     "zod": "^4.0.0"
   },

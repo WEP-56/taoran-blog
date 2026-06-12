@@ -18,6 +18,8 @@
 | [07-data.md](docs/07-data.md) | 数据模型：MDX 内容层 + SQLite 动态层、内容管线 |
 | [08-webgpu.md](docs/08-webgpu.md) | WebGPU 炫技模块：粘土渲染、交互、降级策略 |
 | [09-roadmap.md](docs/09-roadmap.md) | 里程碑路线图、验收标准、风险表 |
+| [10-ops-vps.md](docs/10-ops-vps.md) | VPS 运维：部署更新、Caddy/systemd、备份恢复、排障 |
+| [11-admin-user-guide.md](docs/11-admin-user-guide.md) | 后台使用：登录、写作发布、评论审核、运维页 |
 
 ## 一图速览
 

@@ -5,6 +5,7 @@ import { Hono } from "hono";
 import sharp from "sharp";
 import { z } from "zod";
 import { audit, createSession, destroySession, requireAuth, verifyPassword } from "../auth/session";
+import { validatePostMdx } from "../content/mdx-validate";
 import { findPostFile, listPostFiles, trashPostFile, writePostFile } from "../content/posts-admin";
 import { db } from "../db/client";
 import { assets, comments, posts, viewsDaily } from "../db/schema";
@@ -85,6 +86,25 @@ adminRoutes.put("/posts/:slug", async (c) => {
   }
 
   const before = findPostFile(slug);
+  const mdxIssue = await validatePostMdx(parsed.data.body);
+  if (mdxIssue) {
+    const where =
+      mdxIssue.line && mdxIssue.column
+        ? `第 ${mdxIssue.line} 行，第 ${mdxIssue.column} 列`
+        : mdxIssue.line
+          ? `第 ${mdxIssue.line} 行`
+          : "正文";
+    return c.json(
+      {
+        error: {
+          code: "invalid_mdx",
+          message: `MDX 检查未通过：${where}，${mdxIssue.reason}`,
+        },
+      },
+      400,
+    );
+  }
+
   const file = writePostFile(parsed.data.frontmatter, parsed.data.body);
   audit("post.save", { slug, file }, c);
 
