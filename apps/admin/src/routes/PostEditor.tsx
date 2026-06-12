@@ -25,13 +25,24 @@ function emptyPost(): PostDetail {
 
 export function PostEditor({ slug }: { slug: string | null }) {
   const [post, setPost] = useState<PostDetail | null>(slug ? null : emptyPost());
+  const [tagText, setTagText] = useState("");
   const [saved, setSaved] = useState(true);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const isNew = useRef(slug === null);
 
   useEffect(() => {
-    if (slug) api.post(slug).then(setPost).catch((e) => setError(e.message));
+    if (!slug) {
+      setTagText("");
+      return;
+    }
+    api
+      .post(slug)
+      .then((next) => {
+        setPost(next);
+        setTagText(next.frontmatter.tags.join(", "));
+      })
+      .catch((e) => setError(e.message));
   }, [slug]);
 
   // 离开未保存拦截（docs/06-site-admin.md §3.2）
@@ -48,7 +59,9 @@ export function PostEditor({ slug }: { slug: string | null }) {
 
   const fm = post.frontmatter;
   const patch = (p: Partial<PostDetail["frontmatter"]>) => {
-    setPost({ ...post, frontmatter: { ...fm, ...p } });
+    setPost((current) =>
+      current ? { ...current, frontmatter: { ...current.frontmatter, ...p } } : current,
+    );
     setSaved(false);
   };
 
@@ -103,7 +116,15 @@ export function PostEditor({ slug }: { slug: string | null }) {
               className="clay-input"
               value={fm.slug}
               disabled={!isNew.current && fm.status === "published"}
-              onChange={(e) => patch({ slug: e.target.value })}
+              onChange={(e) =>
+                patch({
+                  slug: e.target.value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9-]+/g, "-")
+                    .replace(/^-+/, "")
+                    .replace(/-{2,}/g, "-"),
+                })
+              }
               placeholder="my-first-post"
             />
           </label>
@@ -120,10 +141,12 @@ export function PostEditor({ slug }: { slug: string | null }) {
             标签（逗号分隔）
             <input
               className="clay-input"
-              value={fm.tags.join(", ")}
-              onChange={(e) =>
-                patch({ tags: e.target.value.split(/[,，]/).map((t) => t.trim()).filter(Boolean).slice(0, 8) })
-              }
+              value={tagText}
+              onChange={(e) => {
+                const next = e.target.value;
+                setTagText(next);
+                patch({ tags: next.split(/[,，]/).map((t) => t.trim()).filter(Boolean).slice(0, 8) });
+              }}
             />
           </label>
           <label className="check">
