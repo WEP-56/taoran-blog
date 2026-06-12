@@ -3,7 +3,9 @@ import { api } from "./lib/api";
 import { useHashRoute } from "./lib/router";
 import { Comments } from "./routes/Comments";
 import { Dashboard } from "./routes/Dashboard";
+import { Friends } from "./routes/Friends";
 import { Login } from "./routes/Login";
+import { Moments } from "./routes/Moments";
 import { Ops } from "./routes/Ops";
 import { PostEditor } from "./routes/PostEditor";
 import { PostsList } from "./routes/PostsList";
@@ -11,6 +13,8 @@ import { PostsList } from "./routes/PostsList";
 const NAV = [
   { href: "/dashboard", label: "仪表盘", icon: "📊" },
   { href: "/posts", label: "文章", icon: "📝" },
+  { href: "/moments", label: "动态", icon: "◦" },
+  { href: "/friends", label: "友链", icon: "↗" },
   { href: "/comments", label: "评论", icon: "💬" },
   { href: "/ops", label: "运维", icon: "🔧" },
 ];
@@ -60,6 +64,8 @@ export function App() {
         {route === "/posts" && <PostsList />}
         {route === "/posts/new" && <PostEditor slug={null} />}
         {editorMatch?.[1] && <PostEditor slug={editorMatch[1]} />}
+        {route.startsWith("/moments") && <Moments />}
+        {route.startsWith("/friends") && <Friends />}
         {route.startsWith("/comments") && <Comments />}
         {route.startsWith("/ops") && <Ops />}
       </main>

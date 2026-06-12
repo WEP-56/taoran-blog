@@ -321,6 +321,33 @@ body {
   width: 100%;
 }
 
+.form-card {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+.form-card label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--clay-ink-2);
+  font-size: 0.9rem;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+.item-list {
+  display: grid;
+  gap: 1rem;
+}
+.list-item {
+  padding: 1rem 1.25rem;
+}
+.list-item p {
+  margin: 0 0 0.5rem;
+}
+
 /* ── 评论审核 ── */
 .comment-queue {
   display: grid;

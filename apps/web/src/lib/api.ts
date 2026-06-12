@@ -1,5 +1,5 @@
 /** 主站 → server 的 API 客户端（公开接口，docs/07-data.md §5） */
-const BASE = import.meta.env.PUBLIC_API_BASE ?? "http://localhost:8787";
+const BASE = import.meta.env.PUBLIC_API_BASE ?? "";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}/api/v1${path}`, {

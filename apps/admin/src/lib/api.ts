@@ -78,6 +78,22 @@ export interface RebuildStatus {
   log: string[];
 }
 
+export interface MomentItem {
+  id: string;
+  text: string;
+  images: string[];
+  mood?: string;
+  location?: string;
+  createdAt: string;
+}
+
+export interface FriendItem {
+  name: string;
+  url: string;
+  avatar: string;
+  desc: string;
+}
+
 export const api = {
   login: (password: string) => request<{ ok: true }>("/auth/login", { method: "POST", body: JSON.stringify({ password }) }),
   logout: () => request<{ ok: true }>("/auth/logout", { method: "POST" }),
@@ -88,6 +104,16 @@ export const api = {
   savePost: (slug: string, data: PostDetail) =>
     request<{ ok: true; rebuild: boolean }>(`/posts/${slug}`, { method: "PUT", body: JSON.stringify(data) }),
   trashPost: (slug: string) => request<{ ok: true }>(`/posts/${slug}`, { method: "DELETE" }),
+
+  moments: () => request<{ moments: MomentItem[] }>("/moments"),
+  addMoment: (data: { text: string; mood?: string; location?: string; createdAt: string }) =>
+    request<{ ok: true; moment: MomentItem }>("/moments", { method: "POST", body: JSON.stringify(data) }),
+  deleteMoment: (id: string) => request<{ ok: true }>(`/moments/${id}`, { method: "DELETE" }),
+
+  friends: () => request<{ friends: FriendItem[] }>("/friends"),
+  addFriend: (data: FriendItem) => request<{ ok: true; friend: FriendItem }>("/friends", { method: "POST", body: JSON.stringify(data) }),
+  deleteFriend: (url: string) =>
+    request<{ ok: true }>("/friends", { method: "DELETE", body: JSON.stringify({ url }) }),
 
   upload: async (slug: string, file: File): Promise<{ file: string; markdown: string }> => {
     const form = new FormData();

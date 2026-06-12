@@ -5,7 +5,9 @@ import { Hono } from "hono";
 import sharp from "sharp";
 import { z } from "zod";
 import { audit, createSession, destroySession, requireAuth, verifyPassword } from "../auth/session";
+import { addFriend, deleteFriend, friendSchema, listFriends } from "../content/friends-admin";
 import { validatePostMdx } from "../content/mdx-validate";
+import { addMoment, deleteMoment, listMoments } from "../content/moments-admin";
 import { findPostFile, listPostFiles, trashPostFile, writePostFile } from "../content/posts-admin";
 import { db } from "../db/client";
 import { assets, comments, posts, viewsDaily } from "../db/schema";
@@ -119,6 +121,64 @@ adminRoutes.delete("/posts/:slug", (c) => {
   const slug = c.req.param("slug") ?? "";
   if (!trashPostFile(slug)) return c.json({ error: { code: "not_found", message: "文章不存在" } }, 404);
   audit("post.trash", { slug }, c);
+  enqueueRebuild();
+  return c.json({ ok: true });
+});
+
+/* ── 动态：content/moments/*.jsonl ── */
+const saveMomentSchema = z.object({
+  text: z.string().min(1).max(2000),
+  mood: z.string().max(8).optional().or(z.literal("")),
+  location: z.string().max(60).optional().or(z.literal("")),
+  createdAt: z.coerce.date(),
+});
+
+adminRoutes.get("/moments", (c) => c.json({ moments: listMoments() }));
+
+adminRoutes.post("/moments", async (c) => {
+  const parsed = saveMomentSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) {
+    return c.json({ error: { code: "invalid", message: parsed.error.issues.map((i) => i.message).join("; ") } }, 400);
+  }
+  const moment = addMoment({
+    ...parsed.data,
+    mood: parsed.data.mood || undefined,
+    location: parsed.data.location || undefined,
+    images: [],
+  });
+  audit("moment.add", { id: moment.id }, c);
+  enqueueRebuild();
+  return c.json({ ok: true, moment });
+});
+
+adminRoutes.delete("/moments/:id", (c) => {
+  const id = c.req.param("id") ?? "";
+  if (!deleteMoment(id)) return c.json({ error: { code: "not_found", message: "动态不存在" } }, 404);
+  audit("moment.delete", { id }, c);
+  enqueueRebuild();
+  return c.json({ ok: true });
+});
+
+/* ── 友链：content/friends.json ── */
+adminRoutes.get("/friends", (c) => c.json({ friends: listFriends() }));
+
+adminRoutes.post("/friends", async (c) => {
+  const parsed = friendSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) {
+    return c.json({ error: { code: "invalid", message: parsed.error.issues.map((i) => i.message).join("; ") } }, 400);
+  }
+  const friend = addFriend(parsed.data);
+  audit("friend.add", { url: friend.url }, c);
+  enqueueRebuild();
+  return c.json({ ok: true, friend });
+});
+
+adminRoutes.delete("/friends", async (c) => {
+  const body = (await c.req.json().catch(() => ({}))) as { url?: string };
+  if (!body.url || !deleteFriend(body.url)) {
+    return c.json({ error: { code: "not_found", message: "友链不存在" } }, 404);
+  }
+  audit("friend.delete", { url: body.url }, c);
   enqueueRebuild();
   return c.json({ ok: true });
 });
