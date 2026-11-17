@@ -10,8 +10,8 @@ FROM node:24-bookworm-slim AS migrate
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
-COPY scripts/migrate.mjs ./scripts/migrate.mjs
-COPY migrations ./migrations
+COPY --chown=node:node scripts/migrate.mjs ./scripts/migrate.mjs
+COPY --chown=node:node migrations ./migrations
 USER node
 CMD ["node", "scripts/migrate.mjs"]
 
