@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.env*
+backups
+output
+*.tsbuildinfo
+
+.playwright-cli
+ssh.txt
+ssh-key.txt
