@@ -14,6 +14,7 @@ import {
   Check,
   Search,
 } from "lucide-react";
+import { ImageTextarea } from "./ImageTextarea";
 import { MarkdownBody } from "@/components/MarkdownBody";
 import { countWords, estimateReadingMinutes } from "@/lib/utils";
 import type { Post } from "@/db/schema";
@@ -62,6 +63,7 @@ export function ArticleEditorPanel({
   const [viewMode, setViewMode] = useState<"split" | "write" | "preview">(
     "split"
   );
+  const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -117,6 +119,7 @@ export function ArticleEditorPanel({
   };
 
   const handleSave = async (overrideStatus?: "published" | "draft") => {
+    if (uploading) { notify("请等待图片上传完成"); return; }
     if (!form.title.trim() || !form.content.trim()) {
       notify("请填写文章标题与正文内容");
       return;
@@ -256,7 +259,7 @@ export function ArticleEditorPanel({
 
             <button
               type="button"
-              disabled={saving}
+              disabled={saving || uploading}
               onClick={() => handleSave("draft")}
               className="rounded-xl surface-canvas px-3.5 py-2 text-xs font-medium ink-secondary hover:ink-primary cursor-pointer"
             >
@@ -265,7 +268,7 @@ export function ArticleEditorPanel({
 
             <button
               type="button"
-              disabled={saving}
+              disabled={saving || uploading}
               onClick={() => handleSave("published")}
               className="surface-invert inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-medium cursor-pointer"
             >
@@ -426,10 +429,12 @@ export function ArticleEditorPanel({
               <div className="text-[11px] uppercase tracking-widest ink-muted mb-2 px-1">
                 Markdown 原文
               </div>
-              <textarea
+              <ImageTextarea
+                key={form.id ?? "new"}
+                onBusy={setUploading}
                 rows={22}
                 value={form.content}
-                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                onValue={update => setForm(previous => ({ ...previous, content: update(previous.content) }))}
                 className="w-full resize-y rounded-xl surface-canvas p-4 font-mono-num text-[13.5px] leading-relaxed ink-primary"
               />
             </div>

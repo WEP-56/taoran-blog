@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageTextarea } from "./ImageTextarea";
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -146,6 +147,7 @@ export function AdminStudio() {
   const [hoveredBarIdx, setHoveredBarIdx] = useState<number | null>(null);
 
   // Moments composer & edit state
+  const [momentUploading, setMomentUploading] = useState(false);
   const [momentDraft, setMomentDraft] = useState({
     id: null as number | null,
     content: "",
@@ -266,6 +268,7 @@ export function AdminStudio() {
   // --- Moments CRUD ---
   const handleSaveMoment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (momentUploading) { notify("请等待图片上传完成"); return; }
     if (!momentDraft.content.trim()) return;
 
     const url = momentDraft.id
@@ -909,13 +912,14 @@ export function AdminStudio() {
               )}
             </div>
 
-            <textarea
+            <ImageTextarea
+              key={momentDraft.id ?? "new"}
+              onBusy={setMomentUploading}
+              onImage={url => setMomentDraft(previous => ({ ...previous, imageUrl: url }))}
               rows={3}
               required
               value={momentDraft.content}
-              onChange={(e) =>
-                setMomentDraft({ ...momentDraft, content: e.target.value })
-              }
+              onValue={update => setMomentDraft(previous => ({ ...previous, content: update(previous.content) }))}
               placeholder="写下此刻的念头、摘抄或骑行路况..."
               className="w-full resize-y rounded-xl surface-canvas p-4 text-sm leading-relaxed ink-primary placeholder:opacity-50"
             />
@@ -950,8 +954,16 @@ export function AdminStudio() {
               />
             </div>
 
+            {momentDraft.imageUrl && (
+              <div className="flex items-start gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={momentDraft.imageUrl} alt="动态配图预览" className="max-h-48 max-w-full rounded-xl object-contain" />
+                <button type="button" onClick={() => setMomentDraft(previous => ({ ...previous, imageUrl: "" }))} className="text-xs ink-muted">移除图片</button>
+              </div>
+            )}
             <div className="flex justify-end">
               <button
+                disabled={momentUploading}
                 type="submit"
                 className="surface-invert inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-xs font-medium cursor-pointer"
               >
@@ -1077,8 +1089,16 @@ export function AdminStudio() {
               className="w-full rounded-xl surface-canvas px-3.5 py-2.5 text-xs ink-primary"
             />
 
+            {momentDraft.imageUrl && (
+              <div className="flex items-start gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={momentDraft.imageUrl} alt="动态配图预览" className="max-h-48 max-w-full rounded-xl object-contain" />
+                <button type="button" onClick={() => setMomentDraft(previous => ({ ...previous, imageUrl: "" }))} className="text-xs ink-muted">移除图片</button>
+              </div>
+            )}
             <div className="flex justify-end">
               <button
+                disabled={momentUploading}
                 type="submit"
                 className="surface-invert inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-xs font-medium cursor-pointer"
               >

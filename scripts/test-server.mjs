@@ -10,7 +10,7 @@ export async function startTestServer() {
   const database = await PGlite.create();
   const socket = new PGLiteSocketServer({ db: database, host: '127.0.0.1', port: 55439, maxConnections: 30 });
   await socket.start();
-  const env = { ...process.env, DATABASE_URL: 'postgresql://postgres:postgres@127.0.0.1:55439/postgres', SITE_URL: 'http://localhost:3137', ADMIN_PASSWORD: 'test-password-only-2026', TRUST_PROXY: '0', DB_POOL_MAX: '1', PORT: '3137', HOSTNAME: '127.0.0.1' };
+  const env = { ...process.env, DATABASE_URL: 'postgresql://postgres:postgres@127.0.0.1:55439/postgres', SITE_URL: 'http://localhost:3137', ADMIN_PASSWORD: 'test-password-only-2026', TRUST_PROXY: '0', DB_POOL_MAX: '1', PORT: '3137', HOSTNAME: '127.0.0.1', UPLOAD_DIR: new URL('../output/test-uploads/', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1') };
   let app;
   const close = async () => { app?.kill(); await socket.stop(); await database.close(); };
   try {

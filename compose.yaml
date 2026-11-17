@@ -32,6 +32,9 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD}
       SITE_URL: ${SITE_URL:?Set SITE_URL}
       TRUST_PROXY: "1"
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -57,6 +60,7 @@ services:
       app:
         condition: service_healthy
 volumes:
+  uploads:
   postgres_data:
   caddy_data:
   caddy_config:

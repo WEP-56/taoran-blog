@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { startTestServer } from '../scripts/test-server.mjs';
+import sharp from 'sharp';
 
 test('production HTTP security and empty-site lifecycle', { timeout: 120000 }, async () => {
   const server = await startTestServer();
@@ -24,6 +25,24 @@ test('production HTTP security and empty-site lifecycle', { timeout: 120000 }, a
     const setCookie = login.headers.get('set-cookie');
     assert.match(setCookie, /HttpOnly/i); assert.match(setCookie, /Secure/i); assert.match(setCookie, /SameSite=strict/i);
     cookie = setCookie.split(';')[0];
+    const image = await sharp({ create: { width: 12, height: 9, channels: 3, background: '#abcdef' } }).png().toBuffer();
+    const upload = (body, authenticated = true, headers = {}) => fetch(server.origin + '/api/uploads', {
+      method: 'POST', headers: { 'Content-Type': 'image/png', ...(authenticated ? { Cookie: cookie } : {}), ...headers }, body,
+    });
+    assert.equal((await upload(image, false)).status, 401);
+    assert.equal((await upload(image, true, { Origin: 'https://evil.test' })).status, 403);
+    assert.equal((await upload(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'))).status, 400);
+    assert.equal((await upload(image, true, { 'Content-Type': 'image/svg+xml' })).status, 415);
+    const oversized = await upload(Buffer.alloc(10 * 1024 * 1024 + 1));
+    assert.equal(oversized.status, 413);
+    const uploaded = await upload(image);
+    assert.equal(uploaded.status, 201);
+    const { url: imageUrl } = await uploaded.json();
+    const served = await call(imageUrl);
+    assert.equal(served.status, 200);
+    assert.equal(served.headers.get('content-type'), 'image/webp');
+    assert.equal((await sharp(Buffer.from(await served.arrayBuffer())).metadata()).width, 12);
+    assert.equal((await call('/uploads/not-a-real-file.webp')).status, 404);
     assert.equal((await call('/api/site', 'PUT', { siteName: 'Hijacked' }, true, { Origin: 'https://evil.test' })).status, 403);
     for (const [resource, body] of [
       ['moments', { id: null, content: '临时动态', tag: '日常', publishedAt: '' }],

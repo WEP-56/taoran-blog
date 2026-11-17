@@ -1,6 +1,10 @@
 {$DOMAIN} {
   encode zstd gzip
-  request_body {
+  request_body /api/uploads {
+    max_size 10MB
+  }
+  @regular not path /api/uploads
+  request_body @regular {
     max_size 512KB
   }
   header Strict-Transport-Security "max-age=31536000"

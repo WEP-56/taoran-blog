@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  outputFileTracingIncludes: {
+    "/api/uploads": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
+    "/uploads/*": ["./node_modules/sharp/**/*", "./node_modules/@img/**/*"],
+  },
   poweredByHeader: false,
   async headers() {
     return [{ source: "/:path*", headers: [
