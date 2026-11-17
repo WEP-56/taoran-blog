@@ -1,5 +1,7 @@
 # Live deployment — 2026-11-17
 
+The `/support` page is managed in Studio → 打赏与鸣谢. Migration `002_support.sql` adds a separate singleton configuration with Markdown copy, ordered support channels and ordered acknowledgements; existing content is untouched. New installations start with no payment links or supporters. Run the migration before starting the new app. Concurrent edits are rejected with HTTP 409 instead of overwriting newer changes. QR uploads use `/api/uploads?purpose=qr` and retain original resolution with lossless WebP encoding; they share the persistent uploads volume. Studio JSON exports include the saved support configuration (image files still require a volume backup).
+
 - App: `/opt/wep-blog`, Docker Compose project `wep-blog`, file `compose.vps.yaml`.
 - Main site: https://taoran.weppp.cyou ; Studio: https://taoran.weppp.cyou/admin .
 - `admin.weppp.cyou` redirects to Studio; the temporary IP preview on port 3139 redirects to the main site.

@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Rss,
   MessageSquareQuote,
+  Coffee,
 } from "lucide-react";
 import { useSite } from "./SiteProvider";
 
@@ -197,6 +198,9 @@ export function CommandPalette() {
               {t("空间控制与入口", "Controls & Studio")}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+              <button type="button" onClick={() => go("/support")} className="surface-block flex items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs ink-primary transition-opacity hover:opacity-85 cursor-pointer">
+                <span className="flex items-center gap-2"><Coffee className="h-3.5 w-3.5" />{t("打赏与鸣谢", "Buy me a coffee")}</span><span className="ink-muted">→</span>
+              </button>
               <button
                 type="button"
                 onClick={() => go("/admin")}

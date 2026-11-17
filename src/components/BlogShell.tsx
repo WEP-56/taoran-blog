@@ -29,6 +29,7 @@ export function BlogShell({
     { href: "/moments", zh: "动态", en: "Moments" },
     { href: "/about", zh: "关于", en: "About" },
     { href: "/links", zh: "友链", en: "Friends" },
+    { href: "/support", zh: "打赏", en: "Buy me a coffee" },
   ];
 
   const isActive = (href: string) => {

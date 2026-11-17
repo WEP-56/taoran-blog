@@ -27,7 +27,11 @@ export async function saveImage(request: Request) {
     const metadata = await sharp(input, { limitInputPixels: 40000000 }).metadata();
     if (!["jpeg", "png", "webp", "gif", "heif"].includes(metadata.format || "")) throw new Error("Unsupported image");
     // Decode and re-encode to strip metadata and active content. Animated inputs use their first frame.
-    output = await sharp(input, { limitInputPixels: 40000000 }).rotate().resize({ width: 2560, height: 2560, fit: "inside", withoutEnlargement: true }).webp({ quality: 88 }).toBuffer();
+    const isQr = new URL(request.url).searchParams.get("purpose") === "qr";
+    const pipeline = sharp(input, { limitInputPixels: 40000000 }).rotate();
+    // QR codes retain their original pixels and use lossless encoding for reliable scanning.
+    output = isQr ? await pipeline.webp({ lossless: true }).toBuffer()
+      : await pipeline.resize({ width: 2560, height: 2560, fit: "inside", withoutEnlargement: true }).webp({ quality: 88 }).toBuffer();
   } catch { throw new ApiError(400, "图片无法读取或尺寸过大，请换一张图片（最多 4000 万像素）"); }
   const directory = uploadDirectory();
   await mkdir(directory, { recursive: true });

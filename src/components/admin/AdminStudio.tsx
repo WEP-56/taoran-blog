@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageTextarea } from "./ImageTextarea";
+import { SupportPanel } from "./SupportPanel";
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -25,6 +26,7 @@ import {
   ArrowLeft,
   Link2,
   ExternalLink,
+  Coffee,
 } from "lucide-react";
 import { useSite } from "@/components/SiteProvider";
 import { ArticleEditorPanel } from "./ArticleEditorPanel";
@@ -102,6 +104,7 @@ type StudioTab =
   | "moments"
   | "friends"
   | "comments"
+  | "support"
   | "settings";
 
 export function AdminStudio() {
@@ -244,7 +247,9 @@ export function AdminStudio() {
     }
   };
 
-  const handleExportBackup = () => {
+  const handleExportBackup = async () => {
+    const supportResponse = await fetch("/api/support?all=1").catch(() => null);
+    if (!supportResponse?.ok) { notify("导出失败，请检查登录状态后重试"); return; }
     const backup = {
       exportedAt: new Date().toISOString(),
       site: siteForm,
@@ -252,6 +257,7 @@ export function AdminStudio() {
       moments,
       friends,
       comments,
+      support: await supportResponse.json(),
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], {
       type: "application/json",
@@ -517,6 +523,11 @@ export function AdminStudio() {
       label: "全站设置",
       icon: <Settings className="h-3.5 w-3.5" />,
     },
+    {
+      id: "support",
+      label: "打赏与鸣谢",
+      icon: <Coffee className="h-3.5 w-3.5" />,
+    },
   ];
 
   const maxDailyViews = Math.max(
@@ -638,6 +649,8 @@ export function AdminStudio() {
       </header>
 
       {/* TAB 1: TELEMETRY & ANALYTICS OVERVIEW */}
+      <div hidden={activeTab !== "support"}><SupportPanel /></div>
+
       {activeTab === "overview" && (
         <div className="space-y-6">
           {/* 6 KPI Monochrome Tonal Blocks */}

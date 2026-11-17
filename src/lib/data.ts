@@ -6,10 +6,19 @@ import {
   galleryItems,
   comments,
   friendLinks,
+  supportSettings,
 } from "@/db/schema";
 import { eq, desc, and, asc } from "drizzle-orm";
 import { ensureDatabaseReady } from "./bootstrap";
 import { normalizeDateSortKey } from "./utils";
+import type { SupportSettings } from "./support";
+
+export async function getSupportSettings(): Promise<SupportSettings> {
+  await ensureDatabaseReady();
+  const [row] = await db.select().from(supportSettings).where(eq(supportSettings.id, 1));
+  if (!row) throw new Error("Support settings migration is required");
+  return { ...row.content, revision: row.revision };
+}
 
 export async function getPublicSiteSettings() {
   await ensureDatabaseReady();

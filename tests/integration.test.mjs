@@ -11,7 +11,11 @@ test('production HTTP security and empty-site lifecycle', { timeout: 120000 }, a
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   try {
-    for (const path of ['/', '/archive', '/tags', '/moments', '/about', '/links', '/gallery', '/admin', '/rss.xml', '/sitemap.xml', '/robots.txt']) assert.equal((await call(path)).status, 200, path);
+    for (const path of ['/', '/archive', '/tags', '/moments', '/about', '/links', '/gallery', '/support', '/admin', '/rss.xml', '/sitemap.xml', '/robots.txt']) assert.equal((await call(path)).status, 200, path);
+    const initialSupport = await (await call('/api/support')).json();
+    assert.deepEqual(initialSupport, { reason: '', declaration: '', thanks: '', channels: [], supporters: [], revision: 0 });
+    assert.equal((await call('/api/support', 'PUT', initialSupport)).status, 401);
+    assert.equal((await call('/api/support?all=1')).status, 401);
     assert.deepEqual(await (await call('/api/posts')).json(), []);
     for (const path of ['/api/posts?all=1', '/api/comments?all=1', '/api/telemetry']) assert.equal((await call(path)).status, 401, path);
     for (const name of ['posts', 'moments', 'friends', 'gallery', 'site', 'comments']) {
@@ -43,6 +47,39 @@ test('production HTTP security and empty-site lifecycle', { timeout: 120000 }, a
     assert.equal(served.headers.get('content-type'), 'image/webp');
     assert.equal((await sharp(Buffer.from(await served.arrayBuffer())).metadata()).width, 12);
     assert.equal((await call('/uploads/not-a-real-file.webp')).status, 404);
+    const qrResponse = await fetch(server.origin + '/api/uploads?purpose=qr', {
+      method: 'POST', headers: { 'Content-Type': 'image/png', Cookie: cookie }, body: image,
+    });
+    assert.equal(qrResponse.status, 201);
+    const { url: qrUrl } = await qrResponse.json();
+    const qrBytes = Buffer.from(await (await call(qrUrl)).arrayBuffer());
+    assert.deepEqual(await sharp(qrBytes).raw().toBuffer(), await sharp(image).raw().toBuffer(), 'QR upload preserves source pixels');
+    const supportDraft = {
+      ...initialSupport, reason: '## 支持独立写作\n\n把有用的经验继续分享。', declaration: '完全自愿，感谢陪伴。', thanks: '感谢以下朋友！',
+      channels: [{ id: 'kofi', name: 'Ko-fi', url: 'https://ko-fi.com/example', qrUrl: '', description: '一杯咖啡' }, { id: 'qr', name: '扫码支持', url: '', qrUrl, description: '' }],
+      supporters: [{ id: 'reader', name: '测试读者', url: '', date: '2026-11-17', amount: '一杯咖啡', message: '谢谢你的鼓励' }],
+    };
+    assert.equal((await call('/api/support', 'PUT', supportDraft, true, { Origin: 'https://evil.test' })).status, 403);
+    for (const bad of [
+      { channels: [{ ...supportDraft.channels[0], url: 'javascript:alert(1)' }] },
+      { channels: [{ ...supportDraft.channels[0], url: '', qrUrl: '' }] },
+      { channels: [{ ...supportDraft.channels[0], qrUrl: '//evil.test/code.svg' }] },
+      { channels: [supportDraft.channels[0], supportDraft.channels[0]] },
+      { supporters: [{ ...supportDraft.supporters[0], date: '2026-02-30' }] },
+      { supporters: [{ ...supportDraft.supporters[0], url: 'data:text/html,hi' }] },
+      { supporters: [{ ...supportDraft.supporters[0], name: '' }] },
+      { reason: 'x'.repeat(20001) }, { unexpected: true },
+    ]) assert.equal((await call('/api/support', 'PUT', { ...supportDraft, ...bad }, true)).status, 400);
+    const supportSaved = await call('/api/support', 'PUT', supportDraft, true);
+    assert.equal(supportSaved.status, 200);
+    assert.equal((await supportSaved.json()).revision, 1);
+    assert.deepEqual(await (await call('/api/support')).json(), { ...supportDraft, revision: 1 });
+    const supportHtml = await (await call('/support')).text();
+    for (const text of ['支持独立写作', 'Ko-fi', '测试读者', qrUrl, '谢谢你的鼓励']) assert.ok(supportHtml.includes(text), text);
+    assert.ok((await (await call('/sitemap.xml')).text()).includes('/support'));
+    assert.equal((await call('/api/support', 'PUT', supportDraft, true)).status, 409, 'stale writes must not overwrite newer content');
+    assert.equal((await call('/api/support', 'PUT', { ...initialSupport, revision: 1 }, true)).status, 200);
+    assert.deepEqual(await (await call('/api/support')).json(), { ...initialSupport, revision: 2 }, 'removals persist');
     assert.equal((await call('/api/site', 'PUT', { siteName: 'Hijacked' }, true, { Origin: 'https://evil.test' })).status, 403);
     for (const [resource, body] of [
       ['moments', { id: null, content: '临时动态', tag: '日常', publishedAt: '' }],

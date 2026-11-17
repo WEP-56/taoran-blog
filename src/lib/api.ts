@@ -67,7 +67,7 @@ export function validateBody(body: Record<string, unknown>) {
   }
 }
 // Every route handler invokes this boundary; authorization does not depend on middleware.
-export function api<C>(handler: (request: Request, context: C) => Promise<Response>, options: { binary?: boolean } = {}) {
+export function api<C>(handler: (request: Request, context: C) => Promise<Response>, options: { binary?: boolean; validate?: (body: Record<string, unknown>) => void } = {}) {
   return async (request: Request, context: C) => {
     try {
       const url = new URL(request.url), path = url.pathname;
@@ -80,7 +80,7 @@ export function api<C>(handler: (request: Request, context: C) => Promise<Respon
         if (request.headers.get("sec-fetch-site") === "cross-site") throw new ApiError(403, "来源不受信任");
         if (request.method !== "DELETE" && !options.binary) {
           if (!request.headers.get("content-type")?.includes("application/json")) throw new ApiError(415, "需要 JSON 内容");
-          body = await readBody(request); validateBody(body);
+          body = await readBody(request); (options.validate ?? validateBody)(body);
         }
       }
       const publicLike = request.method === "PUT" && /^\/api\/(posts|moments)\/[^/]+$/.test(path) && body.action === "like" && Object.keys(body).length === 1;

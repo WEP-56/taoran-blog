@@ -7,6 +7,14 @@ import {
   timestamp,
   jsonb,
 } from "drizzle-orm/pg-core";
+import type { SupportContent } from "@/lib/support";
+
+export const supportSettings = pgTable("support_settings", {
+  id: integer("id").primaryKey().default(1),
+  content: jsonb("content").$type<SupportContent>().notNull(),
+  revision: integer("revision").notNull().default(0),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
 
 export interface SocialLink {
   label: string;
