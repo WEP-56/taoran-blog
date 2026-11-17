@@ -34,7 +34,7 @@ services:
     environment:
       DATABASE_URL: postgresql://blog:${POSTGRES_PASSWORD}@db:5432/blog
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD}
-      SITE_URL: https://taoran.weppp.cyou
+      SITE_URL: ${SITE_URL:-https://taoran.weppp.cyou}
       TRUST_PROXY: "1"
     depends_on:
       migrate:
