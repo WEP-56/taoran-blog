@@ -12,4 +12,4 @@ ssh-key.txt
 
 legacy-assets/
 
-uploads/
+/uploads/*.webp
