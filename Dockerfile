@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim AS build
 WORKDIR /app
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 RUN npm ci
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -8,7 +8,7 @@ RUN npm run build
 
 FROM node:24-bookworm-slim AS migrate
 WORKDIR /app
-COPY package*.json ./
+COPY --chown=node:node package*.json ./
 RUN npm ci --omit=dev
 COPY --chown=node:node scripts/migrate.mjs ./scripts/migrate.mjs
 COPY --chown=node:node migrations ./migrations
