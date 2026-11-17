@@ -18,4 +18,4 @@ Before changing traffic, take a consistent SQLite backup using SQLite's backup A
 
 Deployment and migration are intentionally staged: backup and inspect; prepare/import into a separate database; validate content and URLs; temporarily freeze old writes and synchronize the final changes; then validate and reload Caddy to switch only the two blog domains. The admin domain should redirect to the new canonical site's `/admin` so authentication stays same-origin. Keep unrelated domains and containers unchanged. Restore the saved Caddy configuration to roll back traffic.
 
-Publishing this repository does not perform these server-side steps. Migration has not yet been executed.
+Publishing this repository does not perform these server-side steps. Migration completed on 2026-11-17. See DEPLOYED.md for the live deployment and rollback procedure.

@@ -9,3 +9,5 @@ output/
 ssh-key.txt
 ssh.txt
 .playwright-cli/
+
+legacy-assets/
